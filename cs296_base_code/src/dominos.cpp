@@ -42,12 +42,12 @@ namespace cs296
 		}
     
 
-		b2RevoluteJoint* m_joint1;
-		b2RevoluteJoint* m_joint2;
-		b2RevoluteJoint* m_joint3;
-		b2GearJoint* m_joint4;
-		b2GearJoint* m_joint5;
-		b2WeldJoint* m_joint6;
+		b2Joint* m_joint1;
+		b2Joint* m_joint2;
+		b2Joint* m_joint3;
+		b2Joint* m_joint4;
+		b2Joint* m_joint5;
+		b2Joint* m_joint6;
 		b2Joint* x;
 
 		{
