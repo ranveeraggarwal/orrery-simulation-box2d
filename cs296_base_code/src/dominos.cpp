@@ -42,15 +42,56 @@ namespace cs296
 		}
     
 
-		b2Joint* m_joint1;
-		b2Joint* m_joint2;
-		b2Joint* m_joint3;
-		b2Joint* m_joint4;
-		b2Joint* m_joint5;
-		b2Joint* m_joint6;
-		b2Joint* x;
-
+		
+		//! The three coupled driver gears
 		{
+			b2CircleShape driver_gear_shape_1; //Body shapes : Circles
+			driver_gear_shape_1.m_radius = 5.0f;
+			b2CircleShape driver_gear_shape_2;
+			driver_gear_shape_2.m_radius = 3.0f;
+			b2CircleShape driver_gear_shape_3;
+			driver_gear_shape_3.m_radius = 1.0f; 
+
+
+			b2BodyDef bd_dg_1, bd_dg_2, bd_dg_3;  //The body defs
+			bd_dg_1.type = b2_dynamicBody;
+			bd_dg_2.type = b2_dynamicBody;
+			bd_dg_3.type = b2_dynamicBody;
+			bd_dg_1.position.Set(-15.0f, 10.0f);
+			bd_dg_2.position.Set(-15.0f, 10.0f);
+			bd_dg_3.position.Set(-15.0f, 10.0f);
+			b2Body* dr_gr_bod1 = m_world->CreateBody(&bd_dg_1); //The gear bodies
+			b2Body* dr_gr_bod2 = m_world->CreateBody(&bd_dg_2);
+			b2Body* dr_gr_bod3 = m_world->CreateBody(&bd_dg_3);
+			dr_gr_bod1->CreateFixture(&driver_gear_shape_1, 5.0f);
+			dr_gr_bod2->CreateFixture(&driver_gear_shape_2, 5.0f);
+			dr_gr_bod3->CreateFixture(&driver_gear_shape_3, 5.0f);
+
+			b2RevoluteJointDef driver_gears_joint_def;
+			driver_gears_joint_def.bodyA = ground;
+			driver_gears_joint_def.bodyB = dr_gr_bod1;
+
+			driver_gears_joint_def.enableMotor = true;
+			driver_gears_joint_def.motorSpeed = 5;
+			driver_gears_joint_def.maxMotorTorque = 100;
+
+			driver_gears_joint_def.localAnchorA = ground->GetLocalPoint(bd_dg_1.position);
+			driver_gears_joint_def.localAnchorB = dr_gr_bod1->GetLocalPoint(bd_dg_1.position);
+			b2RevoluteJoint * driver_gears_joint = (b2RevoluteJoint*)m_world->CreateJoint(&driver_gears_joint_def);
+
+			b2WeldJointDef gear_weld_def;
+			gear_weld_def.Initialize(dr_gr_bod1, dr_gr_bod2, dr_gr_bod1->GetWorldCenter());
+			m_world->CreateJoint(&gear_weld_def);
+			b2WeldJointDef gear_weld_def2;
+			gear_weld_def2.Initialize(dr_gr_bod2, dr_gr_bod3, dr_gr_bod2->GetWorldCenter());
+			m_world->CreateJoint(&gear_weld_def2);
+
+
+
+
+
+
+			/*
 			b2CircleShape circle1;//!Gear 1 shape left
 			circle1.m_radius = 2.0f; //!Gear1 
 
