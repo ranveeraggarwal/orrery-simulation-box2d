@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.10.21)  25 JAN 2014 15:54
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.10.21)  31 MAR 2014 20:07
 entering extended mode
  %&-line parsing enabled.
 **ass3.tex
@@ -409,18 +409,18 @@ ations.markings.code.tex
 arkings.code.tex)) (./ass3.aux)
 \openout1 = `ass3.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
-LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
+LaTeX Font Info:    ... okay on input line 16.
 
 (/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -435,12 +435,12 @@ LaTeX Font Info:    ... okay on input line 17.
 \MPnumerator=\count124
 \everyMPtoPDFconversion=\toks36
 ) ABD: EveryShipout initializing macros
-LaTeX Font Info:    Try loading font information for U+msa on input line 18.
+LaTeX Font Info:    Try loading font information for U+msa on input line 17.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 18.
+LaTeX Font Info:    Try loading font information for U+msb on input line 17.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
@@ -451,12 +451,12 @@ File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 File: ./img/8.png Graphic file (type png)
 
 <use ./img/8.png>
-Overfull \hbox (17.98317pt too wide) in paragraph at lines 32--36
+Overfull \hbox (17.98317pt too wide) in paragraph at lines 31--35
 [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 32--36
+Underfull \hbox (badness 10000) in paragraph at lines 31--35
 
  []
 
@@ -464,19 +464,22 @@ Underfull \hbox (badness 10000) in paragraph at lines 32--36
 File: ./img/5.png Graphic file (type png)
 
 <use ./img/5.png>
-Underfull \hbox (badness 10000) in paragraph at lines 49--51
+Underfull \hbox (badness 10000) in paragraph at lines 48--50
 
  []
+
+
+LaTeX Warning: Citation `hcv' on page 3 undefined on input line 51.
 
 <./img/6.png, id=20, 264.99pt x 270.00874pt>
 File: ./img/6.png Graphic file (type png)
  <use ./img/6.png>
-Underfull \hbox (badness 10000) in paragraph at lines 65--71
+Underfull \hbox (badness 10000) in paragraph at lines 64--70
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 65--71
+Underfull \hbox (badness 10000) in paragraph at lines 64--70
 
  []
 
@@ -484,22 +487,25 @@ Underfull \hbox (badness 10000) in paragraph at lines 65--71
 <./img/1.png, id=27, 324.21124pt x 136.51pt>
 File: ./img/1.png Graphic file (type png)
  <use ./img/1.png>
-Underfull \hbox (badness 10000) in paragraph at lines 77--83
+Underfull \hbox (badness 10000) in paragraph at lines 76--82
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 77--83
+Underfull \hbox (badness 10000) in paragraph at lines 76--82
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 87--92
+LaTeX Warning: Citation `halliday' on page 4 undefined on input line 83.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 86--91
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 98--105
+Underfull \hbox (badness 10000) in paragraph at lines 97--104
 
  []
 
@@ -507,12 +513,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 98--105
 File: ./img/7.png Graphic file (type png)
 
 <use ./img/7.png>
-Underfull \hbox (badness 10000) in paragraph at lines 119--130
+Underfull \hbox (badness 10000) in paragraph at lines 118--129
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 119--130
+Underfull \hbox (badness 10000) in paragraph at lines 118--129
 
  []
 
@@ -520,34 +526,39 @@ Underfull \hbox (badness 10000) in paragraph at lines 119--130
 File: ./img/4.png Graphic file (type png)
 
 <use ./img/4.png>
-Underfull \hbox (badness 10000) in paragraph at lines 139--141
+Underfull \hbox (badness 10000) in paragraph at lines 138--140
 
  []
 
-[6 <./img/4.png (PNG copy)>] (./ass3.bbl) [7] (./ass3.aux) ) 
+[6 <./img/4.png (PNG copy)>]
+No file ass3.bbl.
+[7] (./ass3.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
 Here is how much of TeX's memory you used:
- 10775 strings out of 493848
- 206315 string characters out of 1152822
- 243421 words of memory out of 3000000
- 13827 multiletter control sequences out of 15000+50000
- 11698 words of font info for 44 fonts, out of 3000000 for 9000
+ 10771 strings out of 493848
+ 206273 string characters out of 1152822
+ 243375 words of memory out of 3000000
+ 13826 multiletter control sequences out of 15000+50000
+ 11352 words of font info for 43 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
  56i,9n,61p,492b,201s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-t
-exlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/font
-s/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/pub
-lic/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfont
-s/cm/cmmi6.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmmi8.p
-fb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/sha
-re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-tex
-live/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/texmf-texlive/fonts/t
-ype1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive/fonts/type1/public/a
-msfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
-sy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy8.pfb></u
-sr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on ass3.pdf (7 pages, 190316 bytes).
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sha
+re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-te
+xlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts
+/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-texlive/fonts/type1/publi
+c/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/c
+m/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb>
+</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/
+texmf-texlive/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive
+/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/
+public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsf
+onts/cm/cmsy8.pfb>
+Output written on ass3.pdf (7 pages, 174456 bytes).
 PDF statistics:
- 89 PDF objects out of 1000 (max. 8388607)
+ 85 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  43 words of extra memory for PDF output out of 10000 (max. 10000000)
 
