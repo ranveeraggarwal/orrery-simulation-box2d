@@ -15,6 +15,12 @@ using namespace std;
 #include "dominos.hpp"
 namespace cs296
 {
+
+
+
+
+
+
   /**  The is the constructor.
    * It constructs the world by setting up various objects and adding them to the world.
    */ 
@@ -41,51 +47,92 @@ namespace cs296
 			ground->CreateFixture(&shape, 0.0f);
 		}
     
-
+		b2Body* dgs_b1;
+		b2Body* dgs_b2;
+		b2Body* dgs_b3;
+		b2RevoluteJoint * dgs_joint;
 		
 		//! The three coupled driver gears
 		{
-			b2CircleShape driver_gear_shape_1; //Body shapes : Circles
-			driver_gear_shape_1.m_radius = 5.0f;
-			b2CircleShape driver_gear_shape_2;
-			driver_gear_shape_2.m_radius = 3.0f;
-			b2CircleShape driver_gear_shape_3;
-			driver_gear_shape_3.m_radius = 1.0f; 
+			b2CircleShape dgs_shp1; //Body shapes : Circles
+			dgs_shp1.m_radius = 5.0f;
+			b2CircleShape dgs_shp2;
+			dgs_shp2.m_radius = 3.0f;
+			b2CircleShape dgs_shp3;
+			dgs_shp3.m_radius = 1.0f; 
 
 
-			b2BodyDef bd_dg_1, bd_dg_2, bd_dg_3;  //The body defs
-			bd_dg_1.type = b2_dynamicBody;
-			bd_dg_2.type = b2_dynamicBody;
-			bd_dg_3.type = b2_dynamicBody;
-			bd_dg_1.position.Set(-15.0f, 10.0f);
-			bd_dg_2.position.Set(-15.0f, 10.0f);
-			bd_dg_3.position.Set(-15.0f, 10.0f);
-			b2Body* dr_gr_bod1 = m_world->CreateBody(&bd_dg_1); //The gear bodies
-			b2Body* dr_gr_bod2 = m_world->CreateBody(&bd_dg_2);
-			b2Body* dr_gr_bod3 = m_world->CreateBody(&bd_dg_3);
-			dr_gr_bod1->CreateFixture(&driver_gear_shape_1, 5.0f);
-			dr_gr_bod2->CreateFixture(&driver_gear_shape_2, 5.0f);
-			dr_gr_bod3->CreateFixture(&driver_gear_shape_3, 5.0f);
+			b2BodyDef dgs_bd1, dgs_bd2, dgs_bd3;  //The body defs
+			dgs_bd1.type = b2_dynamicBody;
+			dgs_bd2.type = b2_dynamicBody;
+			dgs_bd3.type = b2_dynamicBody;
+			dgs_bd1.position.Set(-15.0f, 10.0f);
+			dgs_bd2.position.Set(-15.0f, 10.0f);
+			dgs_bd3.position.Set(-15.0f, 10.0f);
+			dgs_b1 = m_world->CreateBody(&dgs_bd1); //The gear bodies
+			dgs_b2 = m_world->CreateBody(&dgs_bd2);
+			dgs_b3 = m_world->CreateBody(&dgs_bd3);
+			dgs_b1->CreateFixture(&dgs_shp1, 5.0f);
+			dgs_b2->CreateFixture(&dgs_shp2, 5.0f);
+			dgs_b3->CreateFixture(&dgs_shp3, 5.0f);
 
-			b2RevoluteJointDef driver_gears_joint_def;
-			driver_gears_joint_def.bodyA = ground;
-			driver_gears_joint_def.bodyB = dr_gr_bod1;
+			b2RevoluteJointDef dgs_joint_def;
+			dgs_joint_def.bodyA = ground;
+			dgs_joint_def.bodyB = dgs_b1;
 
-			driver_gears_joint_def.enableMotor = true;
-			driver_gears_joint_def.motorSpeed = 5;
-			driver_gears_joint_def.maxMotorTorque = 100;
+			dgs_joint_def.enableMotor = true;
+			dgs_joint_def.motorSpeed = 5;
+			dgs_joint_def.maxMotorTorque = 100;
 
-			driver_gears_joint_def.localAnchorA = ground->GetLocalPoint(bd_dg_1.position);
-			driver_gears_joint_def.localAnchorB = dr_gr_bod1->GetLocalPoint(bd_dg_1.position);
-			b2RevoluteJoint * driver_gears_joint = (b2RevoluteJoint*)m_world->CreateJoint(&driver_gears_joint_def);
+			dgs_joint_def.localAnchorA = ground->GetLocalPoint(dgs_bd1.position);
+			dgs_joint_def.localAnchorB = dgs_b1->GetLocalPoint(dgs_bd1.position);
+			dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&dgs_joint_def);
 
 			b2WeldJointDef gear_weld_def;
-			gear_weld_def.Initialize(dr_gr_bod1, dr_gr_bod2, dr_gr_bod1->GetWorldCenter());
+			gear_weld_def.Initialize(dgs_b1, dgs_b2, dgs_b1->GetWorldCenter());
+			gear_weld_def.collideConnected = false;
 			m_world->CreateJoint(&gear_weld_def);
 			b2WeldJointDef gear_weld_def2;
-			gear_weld_def2.Initialize(dr_gr_bod2, dr_gr_bod3, dr_gr_bod2->GetWorldCenter());
+			gear_weld_def2.Initialize(dgs_b2, dgs_b3, dgs_b2->GetWorldCenter());
+			gear_weld_def2.collideConnected = false;
 			m_world->CreateJoint(&gear_weld_def2);
+		}
 
+		//!Closest to sun planet
+		{
+			b2CircleShape circ;
+			circ.m_radius = 1.0f;
+			b2PolygonShape rod;
+			rod.SetAsBox(5, 0.1);
+			b2BodyDef gear_bdef;
+			gear_bdef.type = b2_dynamicBody;
+			gear_bdef.position.Set(-9.0, 10);
+			b2Body* gear_b = m_world->CreateBody(&gear_bdef);
+			gear_b->CreateFixture(&circ, 5.0f);
+			b2BodyDef rod_bdef;
+			rod_bdef.type = b2_dynamicBody;
+			rod_bdef.position.Set(-9.0, 10);
+			b2Body* rod_b = m_world->CreateBody(&rod_bdef);
+			rod_b->CreateFixture(&rod, 5.0f);
+			b2RevoluteJointDef gr_jdef;
+			gr_jdef.bodyA = gear_b;
+			gr_jdef.bodyB = ground;
+			gr_jdef.localAnchorA = gear_b->GetLocalPoint(gear_bdef.position);
+			gr_jdef.localAnchorB = ground->GetLocalPoint(gear_bdef.position);
+			b2RevoluteJoint *gr_j = (b2RevoluteJoint*) m_world->CreateJoint(&gr_jdef);
+			b2WeldJointDef gr_weld_def;
+			gr_weld_def.Initialize(gear_b, rod_b, gear_b->GetWorldCenter());
+			gr_weld_def.collideConnected = false;
+			m_world->CreateJoint(&gr_weld_def);
+			b2GearJointDef glink_jd1;
+			glink_jd1.bodyA = dgs_b1;
+			glink_jd1.bodyB = gear_b;
+			glink_jd1.joint1 = dgs_joint;
+			glink_jd1.joint2 = gr_j;
+			glink_jd1.ratio = -0.2;
+			(b2GearJoint*)m_world->CreateJoint(&glink_jd1);
+
+		}
 
 
 
@@ -203,7 +250,7 @@ namespace cs296
 			jd5.joint2 = m_joint3;
 			jd5.ratio = -1.0f / circle2.m_radius;
 			m_joint5 = (b2GearJoint*)m_world->CreateJoint(&jd5);*/
-		}
+		
     
     	
     
