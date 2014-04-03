@@ -20,12 +20,47 @@ namespace cs296
 
 
 
+	b2Body* dominos_t::createGear(int n, uint16 layer, float x, float y)
+	{
+		float r = n/3 ;
+		b2CircleShape gear_shape;
+		gear_shape.m_radius = r;
+		b2BodyDef gear_bd;
+		gear_bd.type = b2_dynamicBody;
+		gear_bd.position.Set(x, y);
+		b2Body *gear_b = m_world->CreateBody(&gear_bd);
+		b2FixtureDef gear_body_fd;
+		gear_body_fd.filter.categoryBits = 0x0010;
+		gear_body_fd.filter.maskBits = 0x0001;
+		gear_body_fd.shape = &gear_shape;
+		gear_body_fd.density = 1.0f;
+		gear_b->CreateFixture(&gear_body_fd);
+
+		for(int i=0; i<n; i++)
+		{
+
+			float pi = 3.151592654;
+			b2PolygonShape gear_tooth;
+			gear_tooth.SetAsBox(r + 0.5, pi*r / (6*n), b2Vec2(0,0), (pi*i) / n);
+			b2FixtureDef tooth_fd;
+			tooth_fd.filter.categoryBits = layer;
+			tooth_fd.filter.maskBits = 0x0001 | layer;
+			tooth_fd.shape = &gear_tooth;
+			tooth_fd.density = 5.0f;
+			gear_b->CreateFixture(&tooth_fd);
+		}
+		return gear_b;
+
+	}
 
   /**  The is the constructor.
    * It constructs the world by setting up various objects and adding them to the world.
    */ 
   
   
+
+
+
   dominos_t::dominos_t()
   {
 
@@ -52,9 +87,47 @@ namespace cs296
 		b2Body* dgs_b3;
 		b2RevoluteJoint * dgs_joint, *dgs_joint2, *dgs_joint3;
 		
-		uint16 GROUND = 0x0001, GEAR_LAYER1 = 0x0002, GEAR_LAYER2 = 0x0004, GEAR_LAYER3 = 0x0008, GEAR_LAYER4 = 0x0010, NC_LAYER = 0x0010;
-		//! The three coupled driver gears
+		uint16 GROUND = 0x0001, GEAR_LAYER1 = 0x0002, GEAR_LAYER2 = 0x0004, 
+				GEAR_LAYER3 = 0x0008, GEAR_LAYER4 = 0x0010, NC_LAYER = 0x0010;
 		{
+			dgs_b1 = createGear(30, GEAR_LAYER1, -15, 20);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = dgs_b1;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = dgs_b1->GetLocalPoint(dgs_b1->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b1->GetPosition());
+			g1_jd.enableMotor = true;
+			g1_jd.motorSpeed = 5;
+			g1_jd.maxMotorTorque = 10000;
+
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+		}
+		{
+			dgs_b2 = createGear(20, GEAR_LAYER2, -15, 20);
+			b2WeldJointDef wdj;
+			wdj.Initialize(dgs_b1, dgs_b2, dgs_b2->GetPosition());
+			m_world->CreateJoint(&wdj);
+		}
+		{
+			dgs_b2 = createGear(20, GEAR_LAYER1, 1.8, 20);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = dgs_b2;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+			
+			
+		}
+
+
+
+		//! The three coupled driver gears
+		/*{
 			b2CircleShape dgs_shp1; //Body shapes : Circles
 			dgs_shp1.m_radius = 5.0f;
 			b2CircleShape dgs_shp2;

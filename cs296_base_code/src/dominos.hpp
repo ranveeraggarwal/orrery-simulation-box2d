@@ -39,6 +39,8 @@ namespace cs296
     {
       return new dominos_t;
     }
+
+    b2Body* createGear(int, uint16, float, float);
   };
 }
   
