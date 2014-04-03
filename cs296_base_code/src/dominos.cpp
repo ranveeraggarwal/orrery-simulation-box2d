@@ -20,9 +20,12 @@ namespace cs296
 
 
 
-	b2Body* dominos_t::createGear(int n, uint16 layer, float x, float y)
+	b2Body* dominos_t::createGear(float r, uint16 layer, float x, float y)
 	{
-		float r = n/3 ;
+		r = r;
+		int n = int(3 * r);
+		r = n/3 ;
+		r = r - 0.25;
 		b2CircleShape gear_shape;
 		gear_shape.m_radius = r;
 		b2BodyDef gear_bd;
@@ -90,7 +93,7 @@ namespace cs296
 		uint16 GROUND = 0x0001, GEAR_LAYER1 = 0x0002, GEAR_LAYER2 = 0x0004, 
 				GEAR_LAYER3 = 0x0008, GEAR_LAYER4 = 0x0010, NC_LAYER = 0x0010;
 		{
-			dgs_b1 = createGear(30, GEAR_LAYER1, -15, 20);
+			dgs_b1 = createGear(5, GEAR_LAYER1, -15, 20);
 			b2RevoluteJointDef g1_jd;
 			g1_jd.bodyA = dgs_b1;
 
@@ -100,18 +103,18 @@ namespace cs296
 			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b1->GetPosition());
 			g1_jd.enableMotor = true;
 			g1_jd.motorSpeed = 5;
-			g1_jd.maxMotorTorque = 10000;
+			g1_jd.maxMotorTorque = 1000000;
 
 			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
 		}
 		{
-			dgs_b2 = createGear(20, GEAR_LAYER2, -15, 20);
+			dgs_b2 = createGear(3, GEAR_LAYER2, -15, 20);
 			b2WeldJointDef wdj;
 			wdj.Initialize(dgs_b1, dgs_b2, dgs_b2->GetPosition());
 			m_world->CreateJoint(&wdj);
 		}
 		{
-			dgs_b2 = createGear(20, GEAR_LAYER1, 1.8, 20);
+			dgs_b2 = createGear(1, GEAR_LAYER1, -9, 20);
 			b2RevoluteJointDef g1_jd;
 			g1_jd.bodyA = dgs_b2;
 
@@ -123,6 +126,35 @@ namespace cs296
 			
 			
 		}
+
+		{
+			dgs_b2 = createGear(3, GEAR_LAYER1, -5, 20);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = dgs_b2;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+			
+			
+		}
+
+		{
+			dgs_b2 = createGear(5, GEAR_LAYER1, 3, 20);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = dgs_b2;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+			
+			
+		}
+
 
 
 
