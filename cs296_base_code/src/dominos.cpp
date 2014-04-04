@@ -223,7 +223,7 @@ namespace cs296
 			g1_jd.maxMotorTorque = 1000;*/
 			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
 			b2PolygonShape rod_s;
-			rod_s.SetAsBox(15, 0.5, b2Vec2(13, 0), 0);
+			rod_s.SetAsBox(12.3, 0.2, b2Vec2(12.3, 0), 0);
 			b2FixtureDef rod_fd;
 			rod_fd.shape = &rod_s;
 			rod_fd.density = 1.0f;
@@ -239,7 +239,7 @@ namespace cs296
 			cg_rjd1.localAnchorB = conn_gear1->GetLocalPoint(conn_gear1->GetPosition());
 			m_world->CreateJoint(&cg_rjd1);
 
-			b2Body *conn_gear2 = createGear(3.2, GEAR_LAYER6, 12.3, 20);
+			b2Body *conn_gear2 = createGear(3.2, GEAR_LAYER6, 12.2, 20);
 			b2RevoluteJointDef cg_rjd2;
 			cg_rjd2.bodyA = b;
 			cg_rjd2.bodyB = conn_gear2;
@@ -247,13 +247,30 @@ namespace cs296
 			cg_rjd2.localAnchorB = conn_gear2->GetLocalPoint(conn_gear2->GetPosition());
 			m_world->CreateJoint(&cg_rjd2);
 
-			b2Body *conn_gear3 = createGear(3.2, GEAR_LAYER6, 18.5, 20);
+			b2Body *conn_gear3 = createGear(3.2, GEAR_LAYER6, 18.4, 20);
 			b2RevoluteJointDef cg_rjd3;
 			cg_rjd3.bodyA = b;
 			cg_rjd3.bodyB = conn_gear3;
 			cg_rjd3.localAnchorA = b->GetLocalPoint(conn_gear3->GetPosition());
 			cg_rjd3.localAnchorB = conn_gear3->GetLocalPoint(conn_gear3->GetPosition());
 			m_world->CreateJoint(&cg_rjd3);
+
+			b2Body *conn_gear4 = createGear(3.2, GEAR_LAYER6, 24.6, 20);
+			b2RevoluteJointDef cg_rjd4;
+			cg_rjd4.bodyA = b;
+			cg_rjd4.bodyB = conn_gear4;
+			cg_rjd4.localAnchorA = b->GetLocalPoint(conn_gear4->GetPosition());
+			cg_rjd4.localAnchorB = conn_gear4->GetLocalPoint(conn_gear4->GetPosition());
+			m_world->CreateJoint(&cg_rjd4);
+
+			b2PolygonShape rod_sm;
+			rod_sm.SetAsBox(3, 0.1, b2Vec2(3, 0), 0);
+			b2FixtureDef rod_fdm;
+			rod_fdm.shape = &rod_sm;
+			rod_fdm.density = 1.0f;
+			rod_fdm.filter.categoryBits = NC_LAYER;
+			rod_fdm.filter.maskBits = 0x0000;
+			conn_gear4->CreateFixture(&rod_fdm);
 
 			
 		}
