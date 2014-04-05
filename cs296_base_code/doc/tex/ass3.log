@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.10.21)  31 MAR 2014 20:07
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.10.21)  5 APR 2014 23:06
 entering extended mode
  %&-line parsing enabled.
 **ass3.tex
@@ -444,121 +444,29 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 17.
 
 (/usr/share/texmf-texlive/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
-) [1
+)
+Missing character: There is no â in font cmr10!
+Missing character: There is no € in font cmr10!
+Missing character: There is no ” in font cmr10!
+ [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] <./img/8.png, id=13, 1859.
-94875pt x 928.46875pt>
-File: ./img/8.png Graphic file (type png)
-
-<use ./img/8.png>
-Overfull \hbox (17.98317pt too wide) in paragraph at lines 31--35
-[] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 31--35
-
- []
-
-[2 <./img/8.png>] <./img/5.png, id=19, 237.88875pt x 152.57pt>
-File: ./img/5.png Graphic file (type png)
-
-<use ./img/5.png>
-Underfull \hbox (badness 10000) in paragraph at lines 48--50
-
- []
-
-
-LaTeX Warning: Citation `hcv' on page 3 undefined on input line 51.
-
-<./img/6.png, id=20, 264.99pt x 270.00874pt>
-File: ./img/6.png Graphic file (type png)
- <use ./img/6.png>
-Underfull \hbox (badness 10000) in paragraph at lines 64--70
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 64--70
-
- []
-
-[3 <./img/5.png (PNG copy)> <./img/6.png (PNG copy)>]
-<./img/1.png, id=27, 324.21124pt x 136.51pt>
-File: ./img/1.png Graphic file (type png)
- <use ./img/1.png>
-Underfull \hbox (badness 10000) in paragraph at lines 76--82
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 76--82
-
- []
-
-
-LaTeX Warning: Citation `halliday' on page 4 undefined on input line 83.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 86--91
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 97--104
-
- []
-
-[4 <./img/1.png (PNG copy)>] <./img/7.png, id=35, 460.72125pt x 392.46625pt>
-File: ./img/7.png Graphic file (type png)
-
-<use ./img/7.png>
-Underfull \hbox (badness 10000) in paragraph at lines 118--129
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 118--129
-
- []
-
-[5 <./img/7.png (PNG copy)>] <./img/4.png, id=39, 432.61626pt x 452.69125pt>
-File: ./img/4.png Graphic file (type png)
-
-<use ./img/4.png>
-Underfull \hbox (badness 10000) in paragraph at lines 138--140
-
- []
-
-[6 <./img/4.png (PNG copy)>]
-No file ass3.bbl.
-[7] (./ass3.aux)
-
-LaTeX Warning: There were undefined references.
-
- ) 
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (./ass3.aux) ) 
 Here is how much of TeX's memory you used:
- 10771 strings out of 493848
- 206273 string characters out of 1152822
- 243375 words of memory out of 3000000
- 13826 multiletter control sequences out of 15000+50000
- 11352 words of font info for 43 fonts, out of 3000000 for 9000
+ 10728 strings out of 493848
+ 205713 string characters out of 1152822
+ 240375 words of memory out of 3000000
+ 13793 multiletter control sequences out of 15000+50000
+ 9489 words of font info for 36 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 56i,9n,61p,492b,201s stack positions out of 5000i,500n,10000p,200000b,50000s
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sha
-re/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-te
-xlive/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts
-/type1/public/amsfonts/cm/cmmi6.pfb></usr/share/texmf-texlive/fonts/type1/publi
-c/amsfonts/cm/cmmi8.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/c
-m/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-</usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/share/
-texmf-texlive/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texmf-texlive
-/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texmf-texlive/fonts/type1/
-public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsf
-onts/cm/cmsy8.pfb>
-Output written on ass3.pdf (7 pages, 174456 bytes).
+ 56i,6n,61p,533b,201s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/share/
+texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texli
+ve/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/typ
+e1/public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/am
+sfonts/cm/cmr17.pfb>
+Output written on ass3.pdf (1 page, 54191 bytes).
 PDF statistics:
- 85 PDF objects out of 1000 (max. 8388607)
+ 25 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 43 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 13 words of extra memory for PDF output out of 10000 (max. 10000000)
 
