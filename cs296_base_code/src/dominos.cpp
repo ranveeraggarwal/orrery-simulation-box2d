@@ -268,7 +268,7 @@ namespace cs296
 			moon_bd.position.Set(30, 20);
 			b2Body *moon = m_world->CreateBody(&moon_bd);
 			b2FixtureDef moon_body_fd;
-			moon_body_fd.filter.categoryBits = 0x0010;
+			moon_body_fd.filter.categoryBits = NC_LAYER;
 			moon_body_fd.filter.maskBits = 0x0000;
 			moon_body_fd.shape = &moon_shape;
 			moon_body_fd.density = 0.0;
@@ -280,7 +280,24 @@ namespace cs296
 			moonjoint.localAnchorB = moon->GetLocalPoint(moon->GetPosition());
 			m_world->CreateJoint(&moonjoint);
 
-
+			b2CircleShape earth_shape;
+			earth_shape.m_radius = 4;
+			b2BodyDef earth_bd;
+			earth_bd.type = b2_dynamicBody;
+			earth_bd.position.Set(24.6, 20);
+			b2Body *earth = m_world->CreateBody(&earth_bd);
+			b2FixtureDef earth_body_fd;
+			earth_body_fd.filter.categoryBits = NC_LAYER;
+			earth_body_fd.filter.maskBits = 0x0000;
+			earth_body_fd.shape = &earth_shape;
+			earth_body_fd.density = 0.0;
+			earth->CreateFixture(&earth_body_fd);
+			b2RevoluteJointDef earthjoint;
+			earthjoint.bodyA = conn_gear4;
+			earthjoint.bodyB = earth;
+			earthjoint.localAnchorA = conn_gear4->GetLocalPoint(earth->GetPosition());
+			earthjoint.localAnchorB = earth->GetLocalPoint(earth->GetPosition());
+			m_world->CreateJoint(&earthjoint);
 		}
 		//! Earth conn gear
 		{
