@@ -311,70 +311,85 @@ namespace cs296
 			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
 			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
 		}
-
-
-		
-
-		/*{
-			dgs_b2 = createGear(1, GEAR_LAYER1, -9, 20);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = dgs_b2;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-			
-			
-		}
-
+		//! Venus conn gear 1
 		{
-			dgs_b2 = createGear(3, GEAR_LAYER1, -5, 20);
+			b2Body *b = createGear(5.2, GEAR_LAYER2, -15, 29);
 			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = dgs_b2;
+			g1_jd.bodyA = b;
 
 			g1_jd.bodyB = ground;
 
-			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
+			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
 			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-			
-			
 		}
 
+		//! Venus conn gear 2
 		{
-			dgs_b2 = createGear(5, GEAR_LAYER1, 3, 20);
+			b2Body *b = createGear(2.0, GEAR_LAYER2, -8, 29);
 			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = dgs_b2;
+			g1_jd.bodyA = b;
 
 			g1_jd.bodyB = ground;
 
-			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
+			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
 			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-			
-			
 		}
 
+		//! Venus conn gear 3
 		{
-			dgs_b2 = createGear(5, GEAR_LAYER2, -15, 12);
+			b2Body *b = createGear(4.95, GEAR_LAYER2, -1.3, 29);
 			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = dgs_b2;
+			g1_jd.bodyA = b;
 
 			g1_jd.bodyB = ground;
 
-			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
+			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
 			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-			
-			
 		}
-		*/
 
 
-    	
-    
+		//! Venus
+		{
+			b2Body *b = createGear(4.5, GEAR_LAYER2, 0, 20);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = b;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+			b2PolygonShape rod_s;
+			rod_s.SetAsBox(10.4, 0.2, b2Vec2(10, 0), 0);
+			b2FixtureDef rod_fd;
+			rod_fd.shape = &rod_s;
+			rod_fd.density = 1.0f;
+			rod_fd.filter.categoryBits = NC_LAYER;
+			rod_fd.filter.maskBits = GROUND;
+			b->CreateFixture(&rod_fd);
+
+			b2CircleShape planet_shape;
+			planet_shape.m_radius = 3.5;
+			b2BodyDef planet_bd;
+			planet_bd.type = b2_dynamicBody;
+			planet_bd.position.Set(20, 20);
+			b2Body *planet = m_world->CreateBody(&planet_bd);
+			b2FixtureDef planet_body_fd;
+			planet_body_fd.filter.categoryBits = NC_LAYER;
+			planet_body_fd.filter.maskBits = 0x0000;
+			planet_body_fd.shape = &planet_shape;
+			planet_body_fd.density = 0.0;
+			planet->CreateFixture(&planet_body_fd);
+			b2RevoluteJointDef planetjoint;
+			planetjoint.bodyA = b;
+			planetjoint.bodyB = planet;
+			planetjoint.localAnchorA = b->GetLocalPoint(planet->GetPosition());
+			planetjoint.localAnchorB = planet->GetLocalPoint(planet->GetPosition());
+			m_world->CreateJoint(&planetjoint);
+		}
   }
 
 	

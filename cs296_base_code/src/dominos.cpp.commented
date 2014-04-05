@@ -1,0 +1,56 @@
+/*{
+			dgs_b2 = createGear(1, GEAR_LAYER1, -9, 20);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = dgs_b2;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+			
+			
+		}
+
+		{
+			dgs_b2 = createGear(3, GEAR_LAYER1, -5, 20);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = dgs_b2;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+			
+			
+		}
+
+		{
+			dgs_b2 = createGear(5, GEAR_LAYER1, 3, 20);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = dgs_b2;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+			
+			
+		}
+
+		{
+			dgs_b2 = createGear(5, GEAR_LAYER2, -15, 12);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = dgs_b2;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = dgs_b2->GetLocalPoint(dgs_b2->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b2->GetPosition());
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+			
+			
+		}
+		*/
