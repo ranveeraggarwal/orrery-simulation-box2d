@@ -167,8 +167,6 @@ namespace cs296
 			b2WeldJointDef wd_jd;
 			wd_jd.Initialize(b, b1, b1->GetPosition());
 			m_world->CreateJoint(&wd_jd);
-			
-			
 		}
 		//! moon conn gear
 		{
@@ -180,12 +178,7 @@ namespace cs296
 
 			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
 			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-
-			
-			
-			
-			
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);			
 		}
 		//!Moon gear
 		{
@@ -202,10 +195,6 @@ namespace cs296
 			b2WeldJointDef wdj ;
 			wdj.Initialize(b, b1, b1->GetPosition());
 			m_world->CreateJoint(&wdj);
-
-			
-			
-			
 		}
 
 		//! Earth gear
@@ -223,7 +212,7 @@ namespace cs296
 			g1_jd.maxMotorTorque = 1000;*/
 			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
 			b2PolygonShape rod_s;
-			rod_s.SetAsBox(12.3, 0.2, b2Vec2(12.3, 0), 0);
+			rod_s.SetAsBox(12.7, 0.2, b2Vec2(12.3, 0), 0);
 			b2FixtureDef rod_fd;
 			rod_fd.shape = &rod_s;
 			rod_fd.density = 1.0f;
@@ -264,15 +253,34 @@ namespace cs296
 			m_world->CreateJoint(&cg_rjd4);
 
 			b2PolygonShape rod_sm;
-			rod_sm.SetAsBox(3, 0.1, b2Vec2(3, 0), 0);
+			rod_sm.SetAsBox(3.4, 0.1, b2Vec2(3, 0), 0);
 			b2FixtureDef rod_fdm;
 			rod_fdm.shape = &rod_sm;
-			rod_fdm.density = 1.0f;
+			rod_fdm.density = 1.0;
 			rod_fdm.filter.categoryBits = NC_LAYER;
 			rod_fdm.filter.maskBits = 0x0000;
 			conn_gear4->CreateFixture(&rod_fdm);
 
-			
+			b2CircleShape moon_shape;
+			moon_shape.m_radius = 1;
+			b2BodyDef moon_bd;
+			moon_bd.type = b2_dynamicBody;
+			moon_bd.position.Set(30, 20);
+			b2Body *moon = m_world->CreateBody(&moon_bd);
+			b2FixtureDef moon_body_fd;
+			moon_body_fd.filter.categoryBits = 0x0010;
+			moon_body_fd.filter.maskBits = 0x0000;
+			moon_body_fd.shape = &moon_shape;
+			moon_body_fd.density = 0.0;
+			moon->CreateFixture(&moon_body_fd);
+			b2RevoluteJointDef moonjoint;
+			moonjoint.bodyA = conn_gear4;
+			moonjoint.bodyB = moon;
+			moonjoint.localAnchorA = conn_gear4->GetLocalPoint(moon->GetPosition());
+			moonjoint.localAnchorB = moon->GetLocalPoint(moon->GetPosition());
+			m_world->CreateJoint(&moonjoint);
+
+
 		}
 		//! Earth conn gear
 		{
@@ -285,10 +293,6 @@ namespace cs296
 			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
 			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
 			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-
-			
-			
-			
 		}
 
 
