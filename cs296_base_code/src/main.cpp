@@ -27,7 +27,7 @@
 #include "render.hpp"
 #include "cs296_base.hpp"
 #include "callbacks.hpp"
-
+#include <sstream>
 //! GLUI is the library used for drawing the GUI
 //! Learn more about GLUI by reading the GLUI documentation
 //! Learn to use preprocessor diectives to make your code portable
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
   test = entry->create_fcn();
 
   //! This initializes GLUT
-  glutInit(&argc, argv);
+  /*glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
   glutInitWindowSize(width, height);
 
@@ -147,6 +147,48 @@ int main(int argc, char** argv)
 
   //! Enter the infinite GLUT event loop
   glutMainLoop();
+	*/	
+	
+	
+	int n=150;
+	std::istringstream ss(argv[1]);
+	ss >> n;
+	
+	b2Profile pf;
+	pf.step=0;
+	pf.collide=0;
+	pf.solveVelocity=0;
+	pf.solvePosition=0;
+	
+	struct timeval tim1;  
+	    gettimeofday(&tim1, NULL);  
+	    double t1=tim1.tv_sec*1000+(tim1.tv_usec/1000.0);  
+	    
+	for(int i=0; i<n; i++)
+	{
+		
+		
+		
+		(test->get_world())->Step(0.000001f, 8, 3);
+		b2Profile const& prof=(test->get_world())->GetProfile();
+		pf.step+=prof.step;
+		pf.collide+=prof.collide;
+		pf.solveVelocity+=prof.solveVelocity;
+		pf.solvePosition+=prof.solvePosition;
+		
+
+	}
+	gettimeofday(&tim1, NULL);  
+	    double t2=tim1.tv_sec*1000+(tim1.tv_usec/1000.0);  
+	printf("Number of Iterations: %d\n", n);
+	printf("Average time per step is %f ms\n", pf.step/n);
+	printf("Average time for collisions is %f ms\n", pf.collide/n);
+	printf("Average time for velocity updates is %f ms\n", pf.solveVelocity/n);
+	printf("Average time for position updates is %f ms\n\n", pf.solvePosition/n);
+	printf("Total loop time is %f ms\n", t2-t1);
+	
+	
+	
   
   return 0;
 }

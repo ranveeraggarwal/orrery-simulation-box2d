@@ -1,0 +1,14 @@
+#!/usr/bin/gnuplot
+set terminal png size 800,600 enhanced font "Helvetica,10"
+set output '../plots/g07_plot02.png'
+set y2tics
+set title "Plot number 2: step time, clssn time, vel upd8, posn upd8, sum "
+set xlabel "Number of iters"
+set ylabel " step, colission, vel, pos (milliseconds)"
+set xtics rotate out
+set y2label "sum time (milliseconds)"
+plot "gdata.temp" using 1:2:xtic(1) title "avg step time" with line axes x1y1,\
+"gdata.temp" using 1:3 title "avg colission time" with line axes x1y1,\
+"gdata.temp" using 1:4 title "avg velocity update time" with line axes x1y1,\
+"gdata.temp" using 1:5 title "avg position update time" with line axes x1y1,\
+"gdata.temp" using 1:7 title "sum of step, coll, vel and pos" with line axes x1y1;

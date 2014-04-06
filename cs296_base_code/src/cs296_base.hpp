@@ -42,9 +42,7 @@ namespace cs296
   //! Why do we use a typedef
   typedef base_sim_t* sim_create_fcn(); 
 
-  //! Simulation settings. Some can be controlled in the GUI. 
-//! It has data members which specify various options and
-//! settings for the simulation. Some of them can be changed via tickboxes in the gui. 
+  //! Simulation settings. Some can be controlled in the GUI.
   struct settings_t
   {
     //! Notice the initialization of the class members in the constructor
@@ -93,7 +91,7 @@ namespace cs296
     int32 pause;
     int32 single_step;
   };
-  //!sim_t class has a string and a pointer to a function.
+  
   struct sim_t
   {
     const char *name;
@@ -107,8 +105,6 @@ namespace cs296
   
   
   const int32 k_max_contact_points = 2048;  
-  //!contact_point_t has two fixtures, the normal at point of contact
-  //! and the location of the point of contact.
   struct contact_point_t
   {
     b2Fixture* fixtureA;
@@ -117,12 +113,19 @@ namespace cs296
     b2Vec2 position;
     b2PointState state;
   };
-  //!case_sim_t class. It contains member functions that deal with events. 
-  //!It also contains member variables for some global simulation params.
+  
   class base_sim_t : public b2ContactListener
   {
   public:
     
+    inline  b2World* get_world(void)
+	{
+		return m_world;
+	}
+    inline  b2Profile& get_totprof(void)
+	{
+		return m_total_profile;
+	}
     base_sim_t();
 
     //! Virtual destructors - amazing objects. Why are these necessary?
@@ -130,7 +133,7 @@ namespace cs296
     
     void set_text_line(int32 line) { m_text_line = line; }
     void draw_title(int x, int y, const char *string);
-    
+   
     virtual void step(settings_t* settings);
 
     virtual void keyboard(unsigned char key) { B2_NOT_USED(key); }

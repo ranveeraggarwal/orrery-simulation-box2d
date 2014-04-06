@@ -1,0 +1,8 @@
+#!/usr/bin/gnuplot
+set terminal png size 800,600 enhanced font "Helvetica,10"
+set output '../plots/g07_plot03.png'
+set title "Plot number 3: Step time with errors"
+set xtics rotate out
+set xlabel "Number of iters"
+set ylabel "Avg step time (ms)"
+plot "gdata.temp" using 1:2:8:xtic(1) title "avg step time with errors" with errorbars axes x1y1;

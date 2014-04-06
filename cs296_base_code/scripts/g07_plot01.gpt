@@ -1,0 +1,17 @@
+#!/usr/bin/gnuplot
+set terminal png size 800,600 enhanced font "Helvetica,10"
+set output '../plots/g07_plot01.png'
+stats "gdata.temp" using ($6/$1)
+set y2tics
+set boxwidth 0.5
+set xtics rotate out
+set style fill solid
+set title "Plot number 1: Step time and total loop time"
+set xlabel "Number of iters"
+set ylabel "Avg step time (ms)"
+set y2label "Total loop time (ms)"
+
+set label 1 "min avg tot time" at (STATS_index_min+1),STATS_min point pointtype 3
+set label 2 "max avg tot time" at (STATS_index_max+1),STATS_max point pointtype 3
+
+plot "gdata.temp" using 1:2:xtic(1) title "avg step time" with boxes axes x1y1, "gdata.temp" using 1:6:xtic(1) title "Total loop time" with line axes x1y2

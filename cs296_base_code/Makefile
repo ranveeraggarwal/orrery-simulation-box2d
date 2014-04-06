@@ -1,4 +1,4 @@
-.PHONY: setup exe statlib
+.PHONY: setup exe statlib dylib libgen exelib clean distclean doc report data plot
 
 #Paths
 ROOT=.
@@ -16,6 +16,9 @@ SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(SOURCES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 LIB_FILE=$(LIB_DIR)/*
 LIB_OBJS = $(subst $(OBJ_DIR)/main.o, , $(OBJECTS))
+DATA=$(ROOT)/data
+PLOTS=$(ROOT)/plots
+SCRIPTS=$(ROOT)/scripts
 
 
 # Compiler and Linker flags
@@ -149,17 +152,21 @@ exelib: libgen $(OBJECTS)
 	fi;\
 
 clean:
+	@printf "Cleaning up data..."
+	@rm -Rf $(DATA)/*
+	@printf "$(OK_STRING)\n"
 	@printf "Cleaning up compiled files..."
-	@rm -Rf my* 
-	@printf "[OK]\n"
+	@rm -Rf my* $(DATA) $(PLOTS)
+	@printf "$(OK_STRING)\n"
 	@rm -Rf temp*
 	@printf "Cleaning up documentation..."
 	@rm -Rf ./doc/html
-	@mv ./doc/tex/report.tex ./doc/tex/bakrep.tex 
-	@mv ./doc/tex/report.bib ./doc/tex/bakrep.bib
-	@rm -f ./doc/tex/report.*
-	@mv ./doc/tex/bakrep.tex ./doc/tex/report.tex
-	@mv ./doc/tex/bakrep.bib ./doc/tex/report.bib
+	@mv ./doc/tex/cs296_report_07.tex ./doc/tex/bakcs296_report_07.tex 
+	@mv ./doc/tex/cs296_report_07.bib ./doc/tex/bakcs296_report_07.bib
+	@rm -f ./doc/tex/cs296_report_07.*
+	@mv ./doc/tex/bakcs296_report_07.tex ./doc/tex/cs296_report_07.tex
+	@mv ./doc/tex/bakcs296_report_07.bib ./doc/tex/cs296_report_07.bib
+	@rm -f ./doc/cs296_report_07.pdf
 	@printf "$(OK_STRING)\n"
 
 distclean: clean
@@ -175,10 +182,37 @@ doc: ./doc/Doxyfile $(SOURCE_DIR)/*
 	@doxygen ./doc/Doxyfile 1> /dev/null 2> temp.log
 	@printf "$(OK_STRING)\n"
 
-report: ./doc/tex/report.*
+report: ./doc/tex/cs296_report_07.*
 	@printf "Building pdf from tex..."
-	@cd ./doc/tex; pdflatex -interaction=batchmode report.tex 1>/dev/null 2>temp.log;\
-	bibtex report 1>/dev/null 2>temp.log;\
-	pdflatex -interaction=batchmode report.tex 1>/dev/null 2>temp.log;\
-	pdflatex -interaction=batchmode report.tex; 1>/dev/null 2>temp.log
+	@cd ./doc/tex; pdflatex -interaction=batchmode cs296_report_07.tex 1>/dev/null 2>temp.log;\
+	bibtex cs296_report_07 1>/dev/null 2>temp.log;\
+	pdflatex -interaction=batchmode cs296_report_07.tex 1>/dev/null 2>temp.log;\
+	pdflatex -interaction=batchmode cs296_report_07.tex; 1>/dev/null 2>temp.log
+	@cp ./doc/tex/cs296_report_07.pdf ./doc
 	@printf "$(OK_STRING)\n"
+
+
+$(DATA)/* : exe
+	@mkdir -p data
+	@cd $(SCRIPTS)/ ; \
+	./g07_gen_data.sh ;\
+	./g07_gen_csv.sh ;\
+	./g07_gen_data_csv.sh ;\
+	./g07_gen_data_random.sh ;
+data : $(DATA)/*
+
+plot : 
+	@if [ ! -d $(DATA) ]; then\
+		make data;\
+	fi;
+	@mkdir -p plots
+	@cd $(SCRIPTS)/ ;\
+	./graph1script.sh ;\
+	./graph2script.sh ;\
+	./graph3script.sh ;\
+	./g07_plot01.gpt ;\
+	./g07_plot02.gpt ;\
+	./g07_plot03.gpt ;\
+	./g07_plot04.gpt ;\
+	./g07_plot05.gpt ;\
+	rm -rf ./*.temp ./*.log;

@@ -1,0 +1,16 @@
+#!/usr/bin/gnuplot
+set terminal png size 800,600 enhanced font "Helvetica,10"
+set output '../plots/g07_plot05.png'
+set boxwidth 0.5
+set xtics rotate out
+set title "Plot number 5: Step time from random csv and full csv"
+set xlabel "Number of iters"
+set ylabel "Avg step time (ms)"
+l1(x) = m*x+c
+fit l1(x) "gdata3.temp" u 1:2 via m, c
+l2(x) = m2*x + c2
+fit l2(x) "gdata.temp" u 1:2 via m2, c2
+plot "gdata3.temp" using 1:2:xtic(1) title "avg step time random" with points pointtype 1 axes x1y1,\
+"gdata.temp" using 1:2 title "Avg loop time all" with points pointtype 2 axes x1y1,\
+"gdata3.temp" using 1:(l1($1)) title "line avg step time random" with line,\
+"gdata.temp" using 1:(l2($1)) title "line avg step time all" with line
