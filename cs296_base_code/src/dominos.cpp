@@ -153,7 +153,7 @@ namespace cs296
 		}
 		//! Moon magnification gear
 		{
-			b2Body *b = createGear(1, GEAR_LAYER4, -15, 13);
+			b2Body *b = createGear(1.2, GEAR_LAYER4, -15, 13);
 			b2RevoluteJointDef g1_jd;
 			g1_jd.bodyA = b;
 
@@ -368,7 +368,7 @@ namespace cs296
 			rod_fd.shape = &rod_s;
 			rod_fd.density = 1.0f;
 			rod_fd.filter.categoryBits = NC_LAYER;
-			rod_fd.filter.maskBits = GROUND;
+			rod_fd.filter.maskBits = 0x0000;
 			b->CreateFixture(&rod_fd);
 
 			b2CircleShape planet_shape;
