@@ -390,6 +390,59 @@ namespace cs296
 			planetjoint.localAnchorB = planet->GetLocalPoint(planet->GetPosition());
 			m_world->CreateJoint(&planetjoint);
 		}
+		//! Jupiter conn gear 1
+		{
+			b2Body *b = createGear(1.2, GEAR_LAYER3, -9, 20);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = b;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+		}
+		//! Jupiter
+		
+		{
+			b2Body *b = createGear(8, GEAR_LAYER3, 0, 20);
+			b2RevoluteJointDef g1_jd;
+			g1_jd.bodyA = b;
+
+			g1_jd.bodyB = ground;
+
+			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
+			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
+			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
+			b2PolygonShape rod_s;
+			rod_s.SetAsBox(20.4, 0.2, b2Vec2(20, 0), 0);
+			b2FixtureDef rod_fd;
+			rod_fd.shape = &rod_s;
+			rod_fd.density = 1.0f;
+			rod_fd.filter.categoryBits = NC_LAYER;
+			rod_fd.filter.maskBits = 0x0040;
+			b->CreateFixture(&rod_fd);
+			
+			b2CircleShape planet_shape;
+			planet_shape.m_radius = 4.5;
+			b2BodyDef planet_bd;
+			planet_bd.type = b2_dynamicBody;
+			planet_bd.position.Set(40, 20);
+			b2Body *planet = m_world->CreateBody(&planet_bd);
+			b2FixtureDef planet_body_fd;
+			planet_body_fd.filter.categoryBits = NC_LAYER;
+			planet_body_fd.filter.maskBits = 0x0000;
+			planet_body_fd.shape = &planet_shape;
+			planet_body_fd.density = 0.0;
+			planet->CreateFixture(&planet_body_fd);
+			b2RevoluteJointDef planetjoint;
+			planetjoint.bodyA = b;
+			planetjoint.bodyB = planet;
+			planetjoint.localAnchorA = b->GetLocalPoint(planet->GetPosition());
+			planetjoint.localAnchorB = planet->GetLocalPoint(planet->GetPosition());
+			m_world->CreateJoint(&planetjoint);
+			
+		}
   }
 
 	

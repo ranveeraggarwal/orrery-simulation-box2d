@@ -22,7 +22,7 @@ SCRIPTS=$(ROOT)/scripts
 
 
 # Compiler and Linker flags
-CPPFLAGS =-g -pg -Wall -fno-strict-aliasing -fPIC
+CPPFLAGS =-g -O3 -Wall -fno-strict-aliasing -fPIC
 CPPFLAGS+=-I $(BOX2D_ROOT)/include -I $(GLUI_ROOT)/include
 LDFLAGS+=-L $(BOX2D_ROOT)/lib -L $(GLUI_ROOT)/lib
 GLUI_ROOT=/usr
@@ -79,7 +79,7 @@ setup:
 		mkdir -p $(BOX2D_BUILD) ;\
 		cd $(BOX2D_BUILD) ;\
 		printf "Running cmake..." ;\
-		cmake DCMAKE_BUILD_TYPE=Release ../ 1> /dev/null 2>>temp.log || touch temp.err;\
+		cmake ../ 1> /dev/null 2>>temp.log || touch temp.err;\
 		if test -e temp.err; \
 			then printf "$(ERR_STRING)\n"  ; \
 		elif test -s temp.log; \
@@ -104,88 +104,16 @@ setup:
 		fi;\
 	fi;
 	@printf "Box2D installation completed/verified \n"
-	
-	
-release_prof: exe_rel
-	@cd mybins/ ;\
-	./cs296_07_exe 1000 ;\
-	mkdir -p ../data ;\
-	gprof -b cs296_07_exe gmon.out > ../data/g07_release_prof.dat ;\
 
-debug_prof: exe_debug
-	@cd mybins/ ;\
-	./cs296_07_exe 1000 ;\
-	mkdir -p ../data ;\
-	gprof -b cs296_07_exe gmon.out > ../data/g07_debug_prof.dat ;\
-	
-setup_debug: 
-	@rm -Rf temp.log temp.err
-	@printf "Setting up installation..\n"
-	@mkdir -p $(ROOT)/myobjs $(ROOT)/mybins $(ROOT)/mylibs
-	@if [ ! -f $(BOX2D_LIB)/libBox2D.a ] || [ ! -d $(BOX2D_INCLUDE)/Box2D ] ;\
-		then\
-		if [ ! -d $(BOX2D_ARCHIVE) ];\
-			printf "Extracting Box2D files..." ;\
-			then tar xfz $(BOX2D_SOURCE)/Box2D.tgz --directory $(BOX2D_SOURCE) 2>>temp.log || touch temp.err;\
-			if test -e temp.err; \
-				then printf "$(ERR_STRING)\n"; \
-			elif test -s temp.log; \
-				then printf "$(WARN_STRING)\n"; \
-			else printf "$(OK_STRING)\n"; \
-			fi;\
-		fi;\
-		mkdir -p $(BOX2D_BUILD) ;\
-		cd $(BOX2D_BUILD) ;\
-		printf "Running cmake..." ;\
-		cmake DCMAKE_BUILD_TYPE=Debug ../ 1> /dev/null 2>>temp.log || touch temp.err;\
-		if test -e temp.err; \
-			then printf "$(ERR_STRING)\n"  ; \
-		elif test -s temp.log; \
-			then printf "$(WARN_STRING)\n"  ; \
-		else printf "$(OK_STRING)\n"; \
-		fi;\
-		printf "Running make..." ;\
-		make 1> /dev/null 2>>temp.log || touch temp.err;\
-		if test -e temp.err; \
-			then printf "$(ERR_STRING)\n"  ; \
-		elif test -s temp.log; \
-			then printf "$(WARN_STRING)\n"  ; \
-		else printf "$(OK_STRING)\n"; \
-		fi;\
-		printf "Running make install..." ;\
-		make install 1> /dev/null 2>> temp.log || touch temp.err;\
-		if test -e temp.err; \
-			then printf "$(ERR_STRING)\n"  ; \
-		elif test -s temp.log; \
-			then printf "$(WARN_STRING)\n"  ; \
-		else printf "$(OK_STRING)\n"; \
-		fi;\
-	fi;
-	@printf "Box2D installation completed/verified \n"
-	
-	
-
-exe_rel: setup objects
-	printf "Generating exe from objects..."
-	@g++ -O3 -pg -o  $(ROOT)/mybins/cs296_07_exe $(LDFLAGS) $(OBJECTS) $(LIBS)
-exe_debug: setup_debug obj_debug 
-	@g++ -O0 -pg -o $(ROOT)/mybins/cs296_07_exe $(LDFLAGS) $(OBJECTS) $(LIBS)
-	
-obj_debug: 
-	@g++ $(CPPFLAGS) -O0 -pg -c $(SRC_DIR)/*.cpp -MD
-	@mv *.o ./myobjs/
-	@mv *.d ./myobjs/
-
-objects: 
-	@g++ $(CPPFLAGS) -O3 -pg -c $(SRC_DIR)/*.cpp -MD
-	@mv *.o ./myobjs/
-	@mv *.d ./myobjs/
+$(OBJECTS) : $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp 
+	@printf "Generating $@ from $<..."
+	@g++ $(CPPFLAGS) -c $< -o $@ -MD
+	@printf "[OK]\n"
 
 
-
-exe: setup  objects
+exe: setup  $(OBJECTS)
 	@printf "Generating exe from objects..."
-	@g++ -O3  -o  $(ROOT)/mybins/cs296_07_exe $(LDFLAGS) $(OBJECTS) $(LIBS) 2>>temp.log || touch temp.err
+	@g++ -o $(ROOT)/mybins/cs296_07_exe $(LDFLAGS) $(OBJECTS) $(LIBS) 2>>temp.log || touch temp.err
 	@if test -e temp.err; \
 		then printf "$(ERR_STRING)\n"  ; \
 	elif test -s temp.log; \
@@ -234,12 +162,9 @@ clean:
 	@printf "Cleaning up documentation..."
 	@rm -Rf ./doc/html
 	@mv ./doc/tex/cs296_report_07.tex ./doc/tex/bakcs296_report_07.tex 
-	@mv ./doc/tex/g07_prof_report.tex ./doc/tex/bakg07_prof_report.tex 
 	@mv ./doc/tex/cs296_report_07.bib ./doc/tex/bakcs296_report_07.bib
 	@rm -f ./doc/tex/cs296_report_07.*
-	@rm -f ./doc/tex/g07_prof_report.*
 	@mv ./doc/tex/bakcs296_report_07.tex ./doc/tex/cs296_report_07.tex
-	@mv ./doc/tex/bakg07_prof_report.tex ./doc/tex/g07_prof_report.tex
 	@mv ./doc/tex/bakcs296_report_07.bib ./doc/tex/cs296_report_07.bib
 	@rm -f ./doc/cs296_report_07.pdf
 	@printf "$(OK_STRING)\n"
@@ -264,8 +189,6 @@ report: ./doc/tex/cs296_report_07.*
 	pdflatex -interaction=batchmode cs296_report_07.tex 1>/dev/null 2>temp.log;\
 	pdflatex -interaction=batchmode cs296_report_07.tex; 1>/dev/null 2>temp.log
 	@cp ./doc/tex/cs296_report_07.pdf ./doc
-	@cd ./doc/tex; pdflatex -interaction=batchmode g07_prof_report.tex 1>/dev/null 2>temp.log;
-	@cp ./doc/tex/g07_prof_report.pdf ./doc
 	@printf "$(OK_STRING)\n"
 
 
@@ -293,4 +216,3 @@ plot :
 	./g07_plot04.gpt ;\
 	./g07_plot05.gpt ;\
 	rm -rf ./*.temp ./*.log;
-	
