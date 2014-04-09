@@ -264,8 +264,8 @@ report: ./doc/tex/cs296_report_07.*
 	pdflatex -interaction=batchmode cs296_report_07.tex 1>/dev/null 2>temp.log;\
 	pdflatex -interaction=batchmode cs296_report_07.tex; 1>/dev/null 2>temp.log
 	@cp ./doc/tex/cs296_report_07.pdf ./doc
-	@cd ./doc/tex; pdflatex -interaction=batchmode g07_prof_report.tex 1>/dev/null 2>temp.log;
-	@cp ./doc/tex/g07_prof_report.pdf ./doc
+	@cd ./doc/tex; pdflatex -interaction=batchmode cs296_report_07.tex 1>/dev/null 2>temp.log;
+	@cp ./doc/tex/cs296_report_07.pdf ./doc
 	@printf "$(OK_STRING)\n"
 
 
