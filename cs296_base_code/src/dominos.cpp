@@ -110,18 +110,18 @@ namespace cs296
 		return (b2WeldJoint*)m_world->CreateJoint(&wjd);
 	}
 	
-	b2Body* dominos_t::createPlanet(float length, float radius)
+	b2Body* dominos_t::createPlanet(float length, float radius, float x = 0)
 	{
 		
 		b2PolygonShape rod;
 		rod.SetAsBox(length, 0.1);
 		b2FixtureDef rodfixture;
 		rodfixture.shape = &rod;
-		rodfixture.density = 0.1;
+		rodfixture.density = 1;
 		rodfixture.filter.categoryBits = 0x0800;
 		rodfixture.filter.maskBits = 0x0000;
 		b2BodyDef rodbd;
-		rodbd.position.Set(length,0);
+		rodbd.position.Set(length+x,0);
 		rodbd.type = b2_dynamicBody;
 		b2Body* rodb = m_world->CreateBody(&rodbd);
 		rodb->CreateFixture(&rodfixture);
@@ -130,12 +130,12 @@ namespace cs296
 		planet.m_radius = radius;
 		b2FixtureDef planetfixture;
 		planetfixture.shape = &planet;
-		planetfixture.density = 0.1;
+		planetfixture.density = 1;
 		planetfixture.filter.categoryBits = 0x0800;
 		planetfixture.filter.maskBits = 0x0000;
 		b2BodyDef planetbd;
 		planetbd.type = b2_dynamicBody;
-		planetbd.position.Set(2*length,0);
+		planetbd.position.Set(2*length+x,0);
 		b2Body* plb = m_world->CreateBody(&planetbd);
 		plb->CreateFixture(&planetfixture);
 		
@@ -241,8 +241,10 @@ namespace cs296
 		weld(earth_gear_body,earth_body);
 
 		///////Moon gear on Earth///////////////////////////////////////
-		b2Body* moon3_gear_body = createGear(1,MOON2_GEAR_LAYER, 33, 0);
+		b2Body* moon3_gear_body = createGear(1.8,MOON2_GEAR_LAYER, 33, 0, true, 1);
 		b2RevoluteJoint* moon3_gear_rev_joint = fixCenterRevolute(moon3_gear_body, earth_gear_body, 0, 0);
+		
+		weld(moon3_gear_body, createPlanet(2, 0.5, 33));
 
 		
 	
@@ -265,15 +267,15 @@ namespace cs296
 		b2RevoluteJoint* emoong1_rev_joint = fixCenterRevolute(earth_moon_gear1, ground, 0,0);
 		b2WeldJoint* emoong_12_weld_joint = weld(earth_moon_gear1, earth_moon_gear2);
 		
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 5.85, 0, true, 0.001f), earth_body, 0, 0);
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 9.75, 0, true, 0.001f), earth_body, 0, 0);
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 13.65, 0, true, 0.001f), earth_body, 0, 0);
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 17.55, 0, true, 0.001f), earth_body, 0, 0);
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 21.45, 0, true, 0.001f), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 5.85, 0, true, 1), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 9.75, 0, true, 1), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 13.65, 0, true,1), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 17.55, 0, true,1), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 21.45, 0, true,1), earth_body, 0, 0);
 
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 25.35, 0, true, 0.001f), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 25.35, 0, true,1), earth_body, 0, 0);
 
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 29.25, 0, true, 0.001f), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 29.25, 0, true, 1), earth_body, 0, 0);
 
 		
 		
