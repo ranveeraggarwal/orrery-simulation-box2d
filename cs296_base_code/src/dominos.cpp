@@ -20,7 +20,7 @@ namespace cs296
 
 
 	//!Function to create gear of radius ~r. 
-	b2Body* dominos_t::createGear(float r, uint16 layer, float x, float y, float density = 1.0f)
+	b2Body* dominos_t::createGear(float r, uint16 layer, float x, float y, bool teeth = true, float density = 1.0f)
 	{
 		r = r;
 		int n = int(5 * r);
@@ -34,12 +34,13 @@ namespace cs296
 		gear_bd.position.Set(x, y);
 		b2Body *gear_b = m_world->CreateBody(&gear_bd);
 		b2FixtureDef gear_body_fd;
-		gear_body_fd.filter.categoryBits = 0x0010;
-		gear_body_fd.filter.maskBits = 0x0000;
+		gear_body_fd.filter.categoryBits = layer;
+		gear_body_fd.filter.maskBits = layer;
 		gear_body_fd.shape = &gear_shape;
 		gear_body_fd.density = density;
+		if (!teeth) gear_body_fd.friction = 10000;
 		gear_b->CreateFixture(&gear_body_fd);
-
+		if(teeth)
 		for(int i=0; i<2*n; i++)
 		{
 
@@ -167,8 +168,8 @@ namespace cs296
 			ground = m_world->CreateBody(&bd);
 
 			b2EdgeShape shape;
-			shape.Set(b2Vec2(50.0f, 0.0f), b2Vec2(-50.0f, 0.0f));
-			ground->CreateFixture(&shape, 0.0f);
+			shape.Set(b2Vec2(0.01, 0.0), b2Vec2(-0.01, 0.0));
+			ground->CreateFixture(&shape, 0.0);
 		}
     
 		
@@ -184,6 +185,9 @@ namespace cs296
 		b2RevoluteJoint* mdg1_rev_joint = fixCenterRevolute(mars_driver_gear1, ground, 0,0);
 		b2WeldJoint* mdg_12_weld_joint = weld(mars_driver_gear1, mars_driver_gear2);
 		
+		///////////////////Moon gear driver////////////////////////////////////////
+		b2Body* moon2_gear_body = createGear(4,MOON2_GEAR_LAYER, 0, 0);
+		b2RevoluteJoint* moon2_gear_rev_joint = fixCenterRevolute(moon2_gear_body, ground, 0, 0);
 		
 		////////Mars->Earth connection gear/////////////////////////////
 		b2Body* earth_mars_gear2 = createGear(4, EARTH_GEAR_LAYER,3.74,8.02);
@@ -219,9 +223,7 @@ namespace cs296
 		b2Body* venus_body = createPlanet(12, 1.5);
 		weld(venus_gear_body,venus_body);
 		
-		////////Moon gear driver////////////////////////////////////////
-		b2Body* moon2_gear_body = createGear(4,MOON2_GEAR_LAYER, 0, 0);
-		b2RevoluteJoint* moon2_gear_rev_joint = fixCenterRevolute(moon2_gear_body, ground, 0, 0);
+		
 		
 		
 		////////Moon gear driven////////////////////////////////////////
@@ -235,9 +237,15 @@ namespace cs296
 		////////Earth gear//////////////////////////////////////////////
 		b2Body* earth_gear_body = createGear(5, EARTH_GEAR_LAYER, 0, 0);
 		b2RevoluteJoint* earth_gear_rev_joint = fixCenterRevolute(earth_gear_body, ground, 0, 0);
-		b2Body* earth_body = createPlanet(17, 3);
+		b2Body* earth_body = createPlanet(16.5, 3);
 		weld(earth_gear_body,earth_body);
+
+		///////Moon gear on Earth///////////////////////////////////////
+		b2Body* moon3_gear_body = createGear(1,MOON2_GEAR_LAYER, 33, 0);
+		b2RevoluteJoint* moon3_gear_rev_joint = fixCenterRevolute(moon3_gear_body, earth_gear_body, 0, 0);
+
 		
+	
 		////////Mars gear///////////////////////////////////////////////
 		b2Body* mars_gear_body = createGear(6, MARS_GEAR_LAYER, 0, 0);
 		b2RevoluteJoint* mars_gear_rev_joint = fixCenterRevolute(mars_gear_body, ground, 0, 0);
@@ -247,7 +255,7 @@ namespace cs296
 		
 		////////Driver gear/////////////////////////////////////////////
 		b2Body* dri_gear_body = createGear(7, DRIVER_GEAR_LAYER, 0, 0);
-		b2RevoluteJoint* dri_gear_rev_joint = fixCenterRevolute(dri_gear_body, ground, 1, 100000);
+		b2RevoluteJoint* dri_gear_rev_joint = fixCenterRevolute(dri_gear_body, ground, 0.5, 100000);
 		
 		
 		////////Earth->moon acceleration gear///////////////////////////
@@ -257,14 +265,94 @@ namespace cs296
 		b2RevoluteJoint* emoong1_rev_joint = fixCenterRevolute(earth_moon_gear1, ground, 0,0);
 		b2WeldJoint* emoong_12_weld_joint = weld(earth_moon_gear1, earth_moon_gear2);
 		
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 5.85, 0, true, 0.001f), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 9.75, 0, true, 0.001f), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 13.65, 0, true, 0.001f), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 17.55, 0, true, 0.001f), earth_body, 0, 0);
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 21.45, 0, true, 0.001f), earth_body, 0, 0);
+
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 25.35, 0, true, 0.001f), earth_body, 0, 0);
+
+		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 29.25, 0, true, 0.001f), earth_body, 0, 0);
+
 		
 		
 		
 		
 		
 		
-		
-		
+		/*
+
+		b2Vec2 vs[200];
+	b2Body* conveyer[200];
+
+	b2FixtureDef chainfd;
+	b2PolygonShape chainshape;
+	float wid=0.25,heig=0.1;
+	chainshape.SetAsBox(wid, heig);
+	b2CircleShape chainshape;
+	float wid = 0.25;
+	chainshape.m_radius = 0.25;
+	chainfd.shape = &chainshape;
+	chainfd.density=.01f;
+	chainfd.friction=1000.0f;
+	chainfd.filter.categoryBits = MOON2_GEAR_LAYER;
+	chainfd.filter.maskBits = MOON2_GEAR_LAYER;
+	b2BodyDef chainDef;
+	chainDef.type = b2_dynamicBody;
+
+	///Top horizontal/*
+ for (int i = 0; i < 73; ++i)
+	{
+	vs[i].Set(-1.0f+(2*wid)*i,2.0f);
+	chainDef.position.Set(-0.75+(2*wid)*i,2.0f);
+	conveyer[i]=m_world->CreateBody(&chainDef);
+	conveyer[i]->CreateFixture(&chainfd);
+	}
+
+	///rightmost vertical 
+	//chainshape.SetAsBox(heig, wid);
+ for (int i = 0; i < 9; ++i)
+	{
+	vs[i+73].Set(35.5,2-i*(2*wid));
+	chainDef.position.Set(35.5,1.75f-i*(2*wid));
+	conveyer[i+73]=m_world->CreateBody(&chainDef);
+	conveyer[i+73]->CreateFixture(&chainfd);
+	}
+
+	///lower horizontal longest
+	//chainshape.SetAsBox(wid, heig);
+ for (int i = 0; i < 73; ++i)
+	{
+	vs[82+i].Set(35.5f-(2*wid)*i,-2.0f);
+	chainDef.position.Set(35.25f-(2*wid)*i,-2.0f);
+	conveyer[i+82]=m_world->CreateBody(&chainDef);
+	conveyer[i+82]->CreateFixture(&chainfd);		
+	}
+
+	///lower vertical longest
+	//chainshape.SetAsBox(heig, wid);
+ for (int i = 0; i < 9; ++i)
+	{
+	vs[155+i].Set(-1.0f,-2.0f+(2*wid)*i);
+	chainDef.position.Set(-1,-1.75f+(2*wid)*i);
+	conveyer[i+155] = m_world->CreateBody(&chainDef);
+	conveyer[i+155]->CreateFixture(&chainfd);
+	}
+
+	///Adding Revolute joint between chain units
+	b2DistanceJointDef jointDef3;
+	jointDef3.frequencyHz = 30;
+	jointDef3.dampingRatio = 1.0f;
+ for(int i=1;i<164;i++)
+	{
+	jointDef3.Initialize(conveyer[i-1], conveyer[i],vs[i-1],vs[i]);
+	m_world->CreateJoint(&jointDef3);
+	}
+
+	jointDef3.Initialize(conveyer[0], conveyer[163],vs[0], vs[163]);
+	m_world->CreateJoint(&jointDef3);
+		*/
 		
 		/*uint16  DRIVER_GEAR_LAYER = 0x0001,  GEAR_LAYER2 = 0x0004, 
 				GEAR_LAYER3 = 0x0008, GEAR_LAYER4 = 0x0010 , GEAR_LAYER5 = 0x0020, GEAR_LAYER6 = 0x0040, NC_LAYER = 0x0010;

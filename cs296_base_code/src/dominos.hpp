@@ -40,7 +40,7 @@ namespace cs296
       return new dominos_t;
     }
 
-    b2Body* createGear(float, uint16, float, float, float);
+    b2Body* createGear(float, uint16, float, float, bool, float);
     b2RevoluteJoint* fixCenterRevolute(b2Body*, b2Body*, float, float);
     b2WeldJoint* weld(b2Body* , b2Body*);
     b2Body* createPlanet(float, float);
