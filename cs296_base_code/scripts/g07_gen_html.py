@@ -60,6 +60,14 @@ print("<div><h1>Plot 3</h1><img src='tex/img/g07_lab09_plot03.png'></div>", file
 print("<div><h1>Plot 4</h1><img src='tex/img/g07_lab09_plot04.png'></div>", file=htmfile)
 
 print("<div><h1>Plot 5</h1><img src='tex/img/g07_lab09_plot05.png'></div>", file=htmfile)
+print("<div><h3>References<h3></div>", file = htmfile);
+f1 = open('./doc/tex/cs296_report_07.bib');
+f1dat = f1.read();
+fspl = re.findall(r'title = {(.*)}', f1dat);
+for i in range(4):
+	print("<div><p>", file = htmfile);
+	print(fspl[i], file = htmfile)
+	print("</p></div>", file = htmfile)
 print("</body></html>", file=htmfile)
 #close </div>, </body>, </html>
 #Add images regex

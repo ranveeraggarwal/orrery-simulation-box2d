@@ -24,7 +24,7 @@ An orrery is a mechanical model of the solar system device that illustrates the 
 \\
 \includegraphics[scale=0.8]{./img/orrery-main.jpg}
 \\
-Though the Greeks had working planetaria, the first orrery that was a planetarium of the modern era was produced in 1704, and one was presented to the Earl of Orrery — whence came the name. They are typically driven by a clockwork mechanism with a globe representing the Sun at the centre, and with a planet at the end of each of the arms.
+Though the Greeks had working planetaria, the first orrery that was a planetarium of the modern era was produced in 1704, and one was presented to the Earl of Orrery — whence came the name. They are typically driven by a clockwork mechanism with a globe representing the Sun at the centre, and with a planet at the end of each of the arms \cite{wiki}.
 
 \section{The Idea}
 \subsection{Initial Design}
@@ -35,7 +35,7 @@ Our intial design that we made in Inkscape looked like this:
 
 The leftmost gear system is the driving gear system. It is driven by a motor and is coupled to the planet gears to give different speed to each planet. The moon is driven by a chain of gear having different $\omega$ than $\omega_{earth}$. This makes the moon revolve around the earth. In this way, choosing the correct radius values, we can simulate a part of the solar system.
 
-The system simulated through this arrangement assumed perfectly circular orbits, i.e. we neglected that the actual celestial orbits are a bit elliptical. Also, since the scope for error in calculations in Box2D is quite high, the system simulated by us doesn't take the exact ratios of orbits. We just tried to simulate the relative faster/slower speed. For example the Earth revolves slower than Venus and Jupiter slower than the Earth. This has been incorporated in our design.
+The system simulated through this arrangement assumed perfectly circular orbits, i.e. we neglected that the actual celestial orbits are a bit elliptical. Also, since the scope for error in calculations in Box2D is quite high, the system simulated by us doesn't take the exact ratios of orbits. We just tried to simulate the relative faster/slower speed. For example the Earth revolves slower than Venus and Jupiter slower than the Earth. This has been incorporated in our design \cite{b2d}.
 
 \subsection{Deviation from the Original Design}
 During the course of doing this project, we learnt a lot more than what we knew initially and we discovered what will work and what wont. Hence, we continuously modified our design to reach to the final output, that looks like this:
@@ -47,14 +47,14 @@ The concept is the same. We planned the gear placements better to make the thing
 
 Now, we have a central stack which has all the planet driving gears along with the main driver gear, all of these being disjoint and relatively free to move. Motion from the main driver gear is transferred to the subsequent gears through a series of gears on the sides of the stack as seen from the figure. The driver motion is transferred to mars, whose motion is transferred to Earth, whose motion is transferred to the moon and venus and venus' motion is transferred to mercury.
 
-The mathematics used here is basic geometry and trigonometry to calculate the gear positions and the gear radii so that they are in precise contact.
+The mathematics used here is basic geometry and trigonometry to calculate the gear positions and the gear radii so that they are in precise contact \cite{halliday}.
 
 \section{Points of Interest}
 Simulating a natural phenomenon via a mechanical simulation is in fact pretty intersting. Whereas the actual solar system works on gravitational pull between celestial bodies, this system is purely contact driven. 
 
 While on first look it looks pretty elementary -- one could have a series of motors attached to rods to rotate the bodies as needed, but here, what we have done is, we have controlled the whole system through just one motor, i.e., changing one small motor parameter influences the whole system.
 
-This has been done by calculating ratios of gear radii and also, the number of gears from the driver gear to the body.
+This has been done by calculating ratios of gear radii and also, the number of gears from the driver gear to the body \cite{hcv}.
 
 Again, to make things simpler, one could have just used gear joints to connect circles and run the whole system smoothly without any sort of complication. But, we chose to make our own gear and instead of using gear joints, we relied on contact forces like friction to drive our system.
 
@@ -97,5 +97,7 @@ Under light load, this is the graph we got.
 
 As we can see, the times have nearly doubled under heavy load.
 
+\bibliographystyle{plain}
+\bibliography{cs296_report_07}
 \end{document}
 }
