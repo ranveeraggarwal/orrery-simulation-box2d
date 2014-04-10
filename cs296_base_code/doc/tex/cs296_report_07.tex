@@ -1,5 +1,5 @@
 % LaTeX file for a 1 page document
-\documentclass[12pt]{report}
+\documentclass[12pt]{article}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -12,47 +12,44 @@
 \usetikzlibrary{calc,patterns,decorations.pathmorphing,decorations.markings}
 
 \title{Simulation of an Orrery in Box2D\\ A CS296 Report by Group 07}
-\author{Ranveer Aggarwal (120050020) \\ ranveeraggarwal@gmail.com \and Devdeep Ray (120050007) \\ devdeep.ray1994@iitb.ac.in \and Sasibhushan Rallabandi (120050056) \\ sasiralla@iitb.ac.in}
+\author{Ranveer Aggarwal (120050020) \\ ranveeraggarwal@gmail.com \\ \\ Devdeep Ray (120050007) \\ devdeep.ray1994@iitb.ac.in\\ \\Sasibhushan Rallabandi (120050056) \\ sasiralla@iitb.ac.in}
 \date{}
 
 \begin{document}
 \maketitle
 
-\chapter*{Introduction}
+\section{Introduction}
 An orrery is a mechanical model of the solar system device that illustrates the relative sizes, positions, and motions of the planets and moons according to the heliocentric model.
 \\
 \\
-\includegraphics[scale=1]{./img/orrery-main.jpg}
+\includegraphics[scale=0.8]{./img/orrery-main.jpg}
 \\
 Though the Greeks had working planetaria, the first orrery that was a planetarium of the modern era was produced in 1704, and one was presented to the Earl of Orrery — whence came the name. They are typically driven by a clockwork mechanism with a globe representing the Sun at the centre, and with a planet at the end of each of the arms.
 
-
-\pagebreak
-
-\chapter*{The Idea}
-\section*{Initial Design}
-Our intial design that we made in Inkscape looked somewhat like this:
+\section{The Idea}
+\subsection{Initial Design}
+Our intial design that we made in Inkscape looked like this:
 \\ \\
 \includegraphics[scale=0.1]{./img/svg.png}
 \\
-Here, one of the gears in the center (say gear A) was driving one of the planets and another gear attached to it (say gear B). On top of gear B, another gear (gear C) was welded which in turn drove another gear with the same center as gear A. The angular velocity of this gear wasn't the same as A. This gear drove another planet. In this way, changing the angular velocities as a function of gear radii, we could simulate a part of the solar system. FOr the moon, we carried forward the gear motion from the center through a series of gears and attached a rod with a sphere, with a gear with the same center as the earth.
 
-The system simulated through this arrangement assumed perfectly circular orbits, i.e. we neglected that the actual celestial orbits are a bit elliptical. Also, since the scope for error in calculations in Box2D is quite high, the system simulated by us doesn't take the exact ratios of orbits. Relatively, we tried to simulate the solar system as it is. For example the Earth revolves slower than Venus and Jupiter slower than the Earth. This has been incorporated in our design.
+The leftmost gear system is the driving gear system. It is driven by a motor and is coupled to the planet gears to give different speed to each planet. The moon is driven by a chain of gear having different $\omega$ than $\omega_{earth}$. This makes the moon revolve around the earth. In this way, choosing the correct radius values, we can simulate a part of the solar system.
 
-\pagebreak
-\section*{Deviation from the Original Design}
-During the course of doing this project, we learnt a lot more than what we knew initially. Hence, we continuously modified our design to reach to the final output, that looks like this:
+The system simulated through this arrangement assumed perfectly circular orbits, i.e. we neglected that the actual celestial orbits are a bit elliptical. Also, since the scope for error in calculations in Box2D is quite high, the system simulated by us doesn't take the exact ratios of orbits. We just tried to simulate the relative faster/slower speed. For example the Earth revolves slower than Venus and Jupiter slower than the Earth. This has been incorporated in our design.
+
+\subsection{Deviation from the Original Design}
+During the course of doing this project, we learnt a lot more than what we knew initially and we discovered what will work and what wont. Hence, we continuously modified our design to reach to the final output, that looks like this:
 \\ \\
 \includegraphics[scale=0.25]{./img/gui.png}
 \\
-Basically, the concept is the same. The only difference being, to prevent cluttering, we modified the conveyor-gear (the gears that transfer motion) positions. 
 
-Now, we have a ceantral stack which has all the planet driving gears along with the main driver gear, all of these being disjoint. Motion from the main driver gear is transferred to the subsequent gears through a series of gears on the sides of the stack as seen from the figure. One of the gears in the stack is actually the moon driver gear whose motion is transferred to the moon body through a series of gears.
+The concept is the same. We planned the gear placements better to make the thing look less cluttered. 
 
-The mathematics used here is basic geometry and trigonometry to calculate the gear positions and the gear radii so that consistency is maintained.
+Now, we have a central stack which has all the planet driving gears along with the main driver gear, all of these being disjoint and relatively free to move. Motion from the main driver gear is transferred to the subsequent gears through a series of gears on the sides of the stack as seen from the figure. The driver motion is transferred to mars, whose motion is transferred to Earth, whose motion is transferred to the moon and venus and venus' motion is transferred to mercury.
 
-\pagebreak
-\chapter*{Points of Interest}
+The mathematics used here is basic geometry and trigonometry to calculate the gear positions and the gear radii so that they are in precise contact.
+
+\section{Points of Interest}
 Simulating a natural phenomenon via a mechanical simulation is in fact pretty intersting. Whereas the actual solar system works on gravitational pull between celestial bodies, this system is purely contact driven. 
 
 While on first look it looks pretty elementary -- one could have a series of motors attached to rods to rotate the bodies as needed, but here, what we have done is, we have controlled the whole system through just one motor, i.e., changing one small motor parameter influences the whole system.
@@ -69,23 +66,36 @@ As you can see, we have a circle and on it, a series of polygons (pentagons, can
 
 Our early design had triangles as teeth. That didn't work out as the teeth kept slipping off -- the design wasn't robust. Then we switched over to squares. It had a completely opposite problem -- the teeth stuck to each other when their sides touch. So, we combined both of these and came up with the pentagon which worked pretty well.
 \pagebreak
-\chapter*{Code Analysis}
-\section*{Analysis with gprof Using a Callgraph}
+\section{Code Analysis}
+\subsection{Analysis with gprof Using a Callgraph}
 Here's the callgraph we got running the debug profile:
 \\ \\
 \includegraphics[scale=0.15]{./img/callgraph.png}
 \\
-As we can see, the b2Min and b2Max functions take up a lot of time. Both combined, took up nearly 30\% of the whole time. Hence these need to be highly optimised. On closer inspection, we see that the children function calls by these functions is significantly higher than their own self-times. That means that maybe, the number of calls can be reduced by applying a more optimal algorithm. 
+As we can see, the b2Max b2Min, b2Mul, subtraction, and creation of vectors functions take up a lot of time. Combined,these took up nearly 50\% of the whole time. Hence these need to be highly optimised. On closer inspection, we see that the children function calls by these functions is significantly higher than their own self-times. 
 
-Apart from these functions, we see that the operations (subtraction, multiplication etc.) take up significant time. This can imply two things. One, the operation itself takes quite a lot of time which is probable, but less likely. Second, the number of calculations taking place is too high. This is more likely since the simulation we're running is pretty heavy on the number of calculations. Another function that takes up a lot of time is the b2PolygonShape::ComputeAABB. A similar reason as above can be given for this.
+Apart from these functions, we see that the operations (subtraction, multiplication etc.) take up significant time.   Another function that takes up a lot of time is the b2PolygonShape::ComputeAABB. A similar reason as above can be given for this.
+
+Polygon colission takes very less time. This shows that box2d optimises polygon intersection routines and only checks it for the gear teeth which are close by. The high amount of time taken by ComputeAABB can be atributed to this fact that the number of polygons is huge, but this helps optimise colission routine, which is much heavier than calculating AABB of each fixture.
 
 Our initial design had significantly higher number of objects than the current design. Hence, there, the time taken was more. So, when we minimised the number of gears and made the stack structure, we optimised our code. 
 
-Further optimisation could have been possible if we would have used gear joints instead of manufacturing them ourselves, but that would have not looked as good as the current design. The current design is more consistent, robust and full of abstractions.
+Further optimisation could have been possible if we would have used gear joints instead of manufacturing them ourselves, but that would have not looked as good as the current design and it would have been to easy to create. The current design is more consistent, robust and full of abstractions.
 
 
+\subsection{Timing code}
+Under heavy processor load, this is the graph we got.
+\\
+\\
+\includegraphics[scale=0.5]{./img/heavyload.png}
+\\
+Under light load, this is the graph we got.
+\\
+\\
+\includegraphics[scale=0.5]{./img/plot2.png}
+\\ 
 
-
+As we can see, the times have nearly doubled under heavy load.
 \bibliography{report}
 
 \end{document}

@@ -233,6 +233,7 @@ clean:
 	@rm -Rf temp*
 	@printf "Cleaning up documentation..."
 	@rm -Rf ./doc/html
+	@rm -rf ./doc/*.html
 	@mv ./doc/tex/cs296_report_07.tex ./doc/tex/bakcs296_report_07.tex 
 	@mv ./doc/tex/g07_prof_report.tex ./doc/tex/bakg07_prof_report.tex 
 	@mv ./doc/tex/cs296_report_07.bib ./doc/tex/bakcs296_report_07.bib
@@ -270,13 +271,13 @@ report: ./doc/tex/cs296_report_07.*
 
 
 	
-data : 
+data : exe
 	@mkdir -p data
 	@cd $(SCRIPTS)/ ; \
 	./g07_gen_data.sh ;\
 	./g07_gen_csv.sh ;\
-	./g07_gen_data_csv.sh ;\
-	./g07_gen_data_random.sh 
+	./g07_gen_data_random.sh;
+	cp ./data/g07_lab05data_01.csv ./data/g07_lab05data_02.csv
 	
 	
 plot : 
@@ -295,3 +296,9 @@ plot :
 	./g07_plot05.gpt ;\
 	rm -rf ./*.temp ./*.log;
 	
+dist : distclean
+	@cd ..; tar cfz cs296_g07_project.tar.gz *;
+	
+
+	
+ 

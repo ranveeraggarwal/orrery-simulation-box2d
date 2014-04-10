@@ -42,7 +42,7 @@ for i in range(len(lw)):
 	k1=re.match(r'\\includegraphics\[.*\]{', lw[i]);
 	if(k1):
 		d=1
-		print("</div><div id='subsec'><img src = './tex/", file=htmfile)
+		print("</div><div id='subsec'><img src = '", file=htmfile)
 		print(lw[i][k1.end():-1], file=htmfile)
 		print("'>", file=htmfile)
 		
