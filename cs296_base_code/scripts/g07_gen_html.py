@@ -52,15 +52,14 @@ for i in range(len(lw)):
 
 
 print("</div><div id = 'sec'><h1>Matplotlib plots</h1>",file = htmfile);
-print("</div><div><h1>Plot 1</h1><img src='../plots/g07_lab09_plot01.png'></div>", file=htmfile)
+print("</div><div><h1>Plot 1</h1><img src='tex/img/g07_lab09_plot01.png'></div>", file=htmfile)
 
-print("<div><h1>Plot 2</h1><img src='../plots/g07_lab09_plot02.png'></div>", file=htmfile)
+print("<div><h1>Plot 2</h1><img src='tex/img/g07_lab09_plot02.png'></div>", file=htmfile)
 
-print("<div><h1>Plot 3</h1><img src='../plots/g07_lab09_plot03.png'></div>", file=htmfile)
+print("<div><h1>Plot 3</h1><img src='tex/img/g07_lab09_plot03.png'></div>", file=htmfile)
+print("<div><h1>Plot 4</h1><img src='tex/img/g07_lab09_plot04.png'></div>", file=htmfile)
 
-print("<div><h1>Plot 4</h1><img src='../plots/g07_lab09_plot04.png'></div>", file=htmfile)
-
-print("<div><h1>Plot 5</h1><img src='../plots/g07_lab09_plot05.png'></div>", file=htmfile)
+print("<div><h1>Plot 5</h1><img src='tex/img/g07_lab09_plot05.png'></div>", file=htmfile)
 print("</body></html>", file=htmfile)
 #close </div>, </body>, </html>
 #Add images regex

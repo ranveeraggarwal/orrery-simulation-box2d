@@ -1,4 +1,4 @@
-.PHONY: setup exe statlib dylib libgen exelib clean distclean doc report data plot
+.PHONY: setup exe statlib dylib libgen exelib clean distclean doc report data plot dist install
 
 #Paths
 ROOT=.
@@ -19,6 +19,9 @@ LIB_OBJS = $(subst $(OBJ_DIR)/main.o, , $(OBJECTS))
 DATA=$(ROOT)/data
 PLOTS=$(ROOT)/plots
 SCRIPTS=$(ROOT)/scripts
+INSTALLPATH = $(ROOT)/../build
+
+
 
 
 # Compiler and Linker flags
@@ -49,6 +52,17 @@ OK_FMT="${OK_COLOR}%30s\n${NO_COLOR}"
 ERR_FMT="${ERR_COLOR}%30s\n${NO_COLOR}"
 WARN_FMT="${WARN_COLOR}%30s\n${NO_COLOR}"
 
+install: setup exe doc
+	mkdir $(INSTALLPATH);
+	mkdir $(INSTALLPATH)/bin;
+	mkdir $(INSTALLPATH)/scripts;
+	mkdir $(INSTALLPATH)/doc;
+	cp -rf ./doc/* $(INSTALLPATH)/doc/;
+	cp -rf ./mybins/* $(INSTALLPATH)/bin/;
+	cp -rf ./scripts/* $(INSTALLPATH)/scripts/;
+	cp Makefile $(INSTALLPATH);
+	make distclean;
+	
 run: setup exe exelib
 
 libgen: setup
@@ -296,7 +310,8 @@ plot :
 	./g07_plot05.gpt ;\
 	rm -rf ./*.temp ./*.log;
 	
-dist : distclean
+dist :
+	make distclean;
 	@cd ..; tar cfz cs296_g07_project.tar.gz *;
 	
 

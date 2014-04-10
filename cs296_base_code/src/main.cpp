@@ -122,7 +122,7 @@ int main(int argc, char** argv)
   entry = sim;
   test = entry->create_fcn();
 
-  //! This initializes GLUT
+ /* //! This initializes GLUT
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
   glutInitWindowSize(width, height);
@@ -147,7 +147,7 @@ int main(int argc, char** argv)
   create_glui_ui();
 
   //! Enter the infinite GLUT event loop
-  glutMainLoop();
+  glutMainLoop();*/
 
 	
 	
