@@ -1,10 +1,17 @@
-/* 
- * Base code for CS 296 Software Systems Lab 
- * Department of Computer Science and Engineering, IIT Bombay
- * Instructor: Parag Chaudhuri
+
+/**
+ * \brief Simulation of orrery
+ * 
+ * @file dominos.cpp
+ * Description: Modified file from originally supplied cs296_base_code
+ * supplied. The new file simulates a mechanical planetarium called an 
+ * orrery. It basically has a lot of gears coupling the various planets
+ * and they rotate about the center.
  */
+
 #include "cs296_base.hpp"
 #include "render.hpp"
+#define UNUSED(x) (void)(x)
 #ifdef __APPLE__
 	#include <GLUT/glut.h>
 #else
@@ -19,14 +26,28 @@ namespace cs296
 
 
 
-	//!Function to create gear of radius ~r. 
+/**
+   The function creates a toothed gear at a given position of a given 
+   radius.
+   
+   @param[in]     r float value denoting the radius of desired gear
+   @param[in]     layer The layer bit desired for the gear
+   @param[in]     x The x coordinate for the gear
+   @param[in]	  y the y coordinate for the gear
+   @param[in]	  teeth If teeth are desired or not. Default: true
+   @param[in]     density The density of the gear. Default: 1.0f
+   @return Pointer b2Body* to the created gear
+ */
+
 	b2Body* dominos_t::createGear(float r, uint16 layer, float x, float y, bool teeth = true, float density = 1.0f)
 	{
+		//Radius adjusted to closest value so that the number of teeth
+		//is an integer
 		r = r;
 		int n = int(5 * r);
 		r = n/5.0 ;
 		r = r - 0.3;
-		//!Gear body
+		//Gear body
 		b2CircleShape gear_shape;
 		gear_shape.m_radius = r;
 		b2BodyDef gear_bd;
@@ -34,21 +55,23 @@ namespace cs296
 		gear_bd.position.Set(x, y);
 		b2Body *gear_b = m_world->CreateBody(&gear_bd);
 		b2FixtureDef gear_body_fd;
+		//Setting mask and category for colission filtering
 		gear_body_fd.filter.categoryBits = layer;
 		gear_body_fd.filter.maskBits = layer;
 		gear_body_fd.shape = &gear_shape;
 		gear_body_fd.density = density;
+		//For toothless gear
 		if (!teeth) gear_body_fd.friction = 10000;
 		gear_b->CreateFixture(&gear_body_fd);
+		//Code for generating teeth
 		if(teeth)
 		for(int i=0; i<2*n; i++)
 		{
 
 			float pi = 3.151592654;
 			
-			//! Shape of the gear teeth
+			// Shape of the gear teeth
 			b2PolygonShape gear_tooth;
-
 			////////////////////////////////////////////////////////////
 			//Uncomment to use square gear teeth
 			/*gear_tooth.SetAsBox(0.2, 0.1, 
@@ -59,8 +82,9 @@ namespace cs296
 			
 			////////////////////////////////////////////////////////////
 			//Uncomment to use pentagon teeth.
-			float xc = (r+0.2);// * cos((pi*i)/n);
-			float yc = 0;//* sin((pi*i)/n);
+			//Calculating the position of teeth
+			float xc = (r+0.2);
+			float yc = 0;
 			b2Vec2 vertices[5];
 			float xt, yt ;
 			float ct=cos((pi*i)/n), st =  sin((pi*i)/n);
@@ -89,9 +113,17 @@ namespace cs296
 
 	}
 	/**
-	 * Fix b1 and b2 with a revolute joint at b1's center.
-	 */
-	b2RevoluteJoint* dominos_t::fixCenterRevolute(b2Body *b1, b2Body *b2, float motor_speed = 0, float motor_torque = 10)
+		This function takes two bodies and connects them with a revolute
+		joint with local anchor at the first body.
+   
+
+		@param[in]   b1 Pointer to the first body
+		@param[in]   b2 Pointer to the second body
+		@param[in]   motor_speed speed of motor. Default: 0
+		@param[in]	 motor_torque max torque of motor. Default: 10
+		@return Pointer b2RevoluteJoint* to the joint
+	*/
+	b2RevoluteJoint* dominos_t::fixCenterRevolute(b2Body *b1, b2Body *b2, float motor_speed = 0, float motor_torque = 100)
 	{
 		b2RevoluteJointDef rjd;
 		rjd.bodyA = b1;
@@ -103,13 +135,28 @@ namespace cs296
 		rjd.maxMotorTorque = motor_torque;
 		return (b2RevoluteJoint*)m_world->CreateJoint(&rjd);
 	}
+	/**
+		This function takes two bodies and welds them together
+   
+
+		@param[in]   b1 Pointer to the first body
+		@param[in]   b2 Pointer to the second body
+		@return Pointer b2RevoluteJoint* to the joint
+	*/
 	b2WeldJoint* dominos_t::weld(b2Body *b1, b2Body *b2)
 	{
 		b2WeldJointDef wjd;
 		wjd.Initialize(b1, b2, b1->GetPosition());
 		return (b2WeldJoint*)m_world->CreateJoint(&wjd);
 	}
-	
+	/**
+		This function takes in a length and a radius and creates a
+		planet of that radius at distance length from the center.
+		@param[in]  length half of distance of planet from center
+		@param[in]   radius radius of planet
+		@param[in]   x To shift center. Default: 0 = no shift
+		@return Pointer b2Body* to the created body
+	*/
 	b2Body* dominos_t::createPlanet(float length, float radius, float x = 0)
 	{
 		
@@ -155,7 +202,7 @@ namespace cs296
   {
 
 
-    //!Ground
+    ///Ground
     /** b2Body* ground \n
      * \brief pointer to the body. \n
      * VAR sim_t* sim \n
@@ -172,524 +219,168 @@ namespace cs296
 			ground->CreateFixture(&shape, 0.0);
 		}
     
-		
+		//!Layer bits
 		uint16 DRIVER_GEAR_LAYER = 0x0001, MARS_GEAR_LAYER = 0x0002, EARTH_GEAR_LAYER = 0x0004, MOON1_GEAR_LAYER = 0x0008,
 				MOON2_GEAR_LAYER = 0x0010, VENUS_GEAR_LAYER = 0x0020, MERCURY_GEAR_LAYER = 0x0040;
-		
-		
-		
-		////////Driver->Mars connection/////////////////////////////////
-		b2Body* mars_driver_gear2 = createGear(5, MARS_GEAR_LAYER,10.85,0);
-		b2RevoluteJoint* mdg2_rev_joint = fixCenterRevolute(mars_driver_gear2, ground, 0,0);
-		b2Body* mars_driver_gear1 = createGear(4, DRIVER_GEAR_LAYER,10.85,0);
-		b2RevoluteJoint* mdg1_rev_joint = fixCenterRevolute(mars_driver_gear1, ground, 0,0);
-		b2WeldJoint* mdg_12_weld_joint = weld(mars_driver_gear1, mars_driver_gear2);
-		
-		///////////////////Moon gear driver////////////////////////////////////////
-		b2Body* moon2_gear_body = createGear(4,MOON2_GEAR_LAYER, 0, 0);
-		b2RevoluteJoint* moon2_gear_rev_joint = fixCenterRevolute(moon2_gear_body, ground, 0, 0);
-		
-		////////Mars->Earth connection gear/////////////////////////////
-		b2Body* earth_mars_gear2 = createGear(4, EARTH_GEAR_LAYER,3.74,8.02);
-		b2RevoluteJoint* emg2_rev_joint = fixCenterRevolute(earth_mars_gear2, ground, 0,0);
-		b2Body* earth_mars_gear1 = createGear(3, MARS_GEAR_LAYER,3.74,8.02);
-		b2RevoluteJoint* emg1_rev_joint = fixCenterRevolute(earth_mars_gear1, ground, 0,0);
-		b2WeldJoint* emg_12_weld_joint = weld(earth_mars_gear1, earth_mars_gear2);
-		
-		
-		////////Earth->Venus connection gear////////////////////////////
-		b2Body* venus_earth_gear2 = createGear(4.5, VENUS_GEAR_LAYER,-7.39,-4.5);
-		b2RevoluteJoint* veg2_rev_joint = fixCenterRevolute(venus_earth_gear2, ground, 0,0);
-		b2Body* venus_earth_gear1 = createGear(3.9, EARTH_GEAR_LAYER,-7.39,-4.5);
-		b2RevoluteJoint* veg1_rev_joint = fixCenterRevolute(venus_earth_gear1, ground, 0,0);
-		b2WeldJoint* veg_12_weld_joint = weld(venus_earth_gear1, venus_earth_gear2);
-		////////Venus->Mercury connection gear////////////////////////////
-		b2Body* merc_venus_gear2 = createGear(4, MERCURY_GEAR_LAYER,-5.13,5.13);
-		b2RevoluteJoint* mvg2_rev_joint = fixCenterRevolute(merc_venus_gear2, ground, 0,0);
-		b2Body* merc_venus_gear1 = createGear(3, VENUS_GEAR_LAYER,-5.13,5.13);
-		b2RevoluteJoint* mvg1_rev_joint = fixCenterRevolute(merc_venus_gear1, ground, 0,0);
-		b2WeldJoint* mvg_12_weld_joint = weld(merc_venus_gear1, merc_venus_gear2);
-		
-		
-		////////Mercury gear////////////////////////////////////////////
-		b2Body* mercury_gear_body = createGear(3.5, MERCURY_GEAR_LAYER, 0, 0);
-		b2RevoluteJoint* mercury_gear_rev_joint = fixCenterRevolute(mercury_gear_body, ground, 0, 0);
+		//!Planets layer
+		//!Mercury
 		b2Body* mercury_body = createPlanet(9, 1);
-		weld(mercury_gear_body,mercury_body);
 		
-		////////Venus gear///////////////////////////////////////////////
-		b2Body* venus_gear_body = createGear(4.5, VENUS_GEAR_LAYER, 0, 0);
-		b2RevoluteJoint* venus_gear_rev_joint = fixCenterRevolute(venus_gear_body, ground, 0, 0);
+		//!Venus
 		b2Body* venus_body = createPlanet(12, 1.5);
+		
+		//!Moon
+		b2Body* moon_body = createPlanet(2, 0.5, 33);
+		
+		//!Earth
+		b2Body* earth_body = createPlanet(16.5, 3);
+
+		//!Mars
+		b2Body* mars_body = createPlanet(23, 2.5);
+		
+		
+		//!Mercury gear layer
+		//!Main gear for mercury planet
+		b2Body* mercury_gear_body = createGear(3.5, MERCURY_GEAR_LAYER, 0, 0);
+		//!Top layer of the venus->mercury coupling gear
+		b2Body* merc_venus_gear2 = createGear(4, MERCURY_GEAR_LAYER,-5.13,5.13);
+		
+		//!Venus gear layer
+		//!Main gear for venus planet
+		b2Body* venus_gear_body = createGear(4.5, VENUS_GEAR_LAYER, 0, 0);
+		//!Top layer of earth->venus coupling gear
+		b2Body* venus_earth_gear2 = createGear(4.5, VENUS_GEAR_LAYER,-7.39,-4.5);
+		//!Bottom layer of venus->mercury coupling gear
+		b2Body* merc_venus_gear1 = createGear(3, VENUS_GEAR_LAYER,-5.13,5.13);
+		
+		//!Moon movement gear layer
+		//!Gear on earth's center for the moon
+		b2Body* moon3_gear_body = createGear(1.8,MOON2_GEAR_LAYER, 33, 0, true, 1);
+		//!Gears coupling the central moon gear to the earth moon gear
+		b2RevoluteJoint* moon_coupler_joints[7];
+		UNUSED(moon_coupler_joints);
+		b2Body* moon_couplers[7];
+		for(int i = 0; i< 7; i++)
+		{
+			moon_couplers[i] = createGear(2, MOON2_GEAR_LAYER, 3.9*i+5.85, 0, true, 1);
+			moon_coupler_joints[i]=fixCenterRevolute(moon_couplers[i], earth_body, 0, 0);
+		}
+		//!Central upper moon gear
+		b2Body* moon2_gear_body = createGear(4,MOON2_GEAR_LAYER, 0, 0);
+		
+		//!Moon driving layer
+		//!Central lower moon gear
+		b2Body* moon1_gear_body = createGear(3,MOON1_GEAR_LAYER, 0, 0);
+		//!Top layer of earth moon coupling to accelerate moon
+		b2Body* earth_moon_gear2 = createGear(5.1 , MOON1_GEAR_LAYER,2.702,-7.423);
+		
+		//!Earth layer
+		//!Upper layer of earth->mars coupling
+		b2Body* earth_mars_gear2 = createGear(4, EARTH_GEAR_LAYER,3.74,8.02);
+		//!Lower layer of earth->venus coupling
+		b2Body* venus_earth_gear1 = createGear(3.9, EARTH_GEAR_LAYER,-7.39,-4.5);
+		//!Main earth gear
+		b2Body* earth_gear_body = createGear(5, EARTH_GEAR_LAYER, 0, 0);
+		//!Bottom layer of earth moon coupling to accelerate moon
+		b2Body* earth_moon_gear1 = createGear(3, EARTH_GEAR_LAYER,2.702,-7.423);
+		
+		//!Mars layer
+		//!Upper layer of driver gear->mars coupling
+		b2Body* mars_driver_gear2 = createGear(5, MARS_GEAR_LAYER,10.85,0);
+		//!Lower layer of mars->earth coupling
+		b2Body* earth_mars_gear1 = createGear(3, MARS_GEAR_LAYER,3.74,8.02);
+		//!Main mars gear
+		b2Body* mars_gear_body = createGear(6, MARS_GEAR_LAYER, 0, 0);
+		
+		//!Driver layer
+		//!Bottom layer of driver->mars coupling
+		b2Body* mars_driver_gear1 = createGear(4, DRIVER_GEAR_LAYER,10.85,0);
+		//!Main driver gear
+		b2Body* dri_gear_body = createGear(7, DRIVER_GEAR_LAYER, 0, 0);
+		
+		
+		//!Joints, welds
+		
+		//!Mercury main gear revolute joint
+		b2RevoluteJoint* mercury_gear_rev = fixCenterRevolute(mercury_gear_body, ground);
+		UNUSED(mercury_gear_rev);
+		//!Mercury planet weld to main gear
+		b2WeldJoint* merc_main_weld = weld(mercury_gear_body,mercury_body);
+		UNUSED(merc_main_weld);
+		
+		//!Driver mars coupling gears revolute joints and internal weld
+		b2RevoluteJoint* mdg2_rev = fixCenterRevolute(mars_driver_gear2, ground);
+		UNUSED(mdg2_rev);
+		b2RevoluteJoint* mdg1_rev = fixCenterRevolute(mars_driver_gear1, ground);
+		UNUSED(mdg1_rev);
+		b2WeldJoint* mdg_12_weld = weld(mars_driver_gear1, mars_driver_gear2);
+		UNUSED(mdg_12_weld);
+		
+		
+		//!Moon gears joints
+		b2RevoluteJoint* moon2_gear_rev = fixCenterRevolute(moon2_gear_body, ground);
+		UNUSED(moon2_gear_rev);
+		b2RevoluteJoint* moon1_gear_rev_joint = fixCenterRevolute(moon1_gear_body, ground);
+		UNUSED(moon1_gear_rev_joint);
+		b2WeldJoint* moon_dri_weld = weld(moon1_gear_body, moon2_gear_body);
+		UNUSED(moon_dri_weld);
+		
+		//!Mars earth coupling gears rev joints and welds
+		b2RevoluteJoint* emg2_rev_joint = fixCenterRevolute(earth_mars_gear2, ground);
+		UNUSED(emg2_rev_joint);
+		b2RevoluteJoint* emg1_rev_joint = fixCenterRevolute(earth_mars_gear1, ground);
+		UNUSED(emg1_rev_joint);
+		b2WeldJoint* emg_12_weld_joint = weld(earth_mars_gear1, earth_mars_gear2);
+		UNUSED(emg_12_weld_joint);
+		
+		//!Earth moon acceleration gear rev joints and welds
+		b2RevoluteJoint* emoong2_rev_joint = fixCenterRevolute(earth_moon_gear2, ground);
+		UNUSED(emoong2_rev_joint );
+		b2RevoluteJoint* emoong1_rev_joint = fixCenterRevolute(earth_moon_gear1, ground);
+		UNUSED(emoong1_rev_joint);
+		b2WeldJoint* emoong_12_weld_joint = weld(earth_moon_gear1, earth_moon_gear2);
+		UNUSED(emoong_12_weld_joint);
+		//!Venus earth coupling gears rev joint and welds
+		b2RevoluteJoint* veg2_rev_joint = fixCenterRevolute(venus_earth_gear2, ground);
+		UNUSED(veg2_rev_joint);
+		b2RevoluteJoint* veg1_rev_joint = fixCenterRevolute(venus_earth_gear1, ground);
+		UNUSED(veg1_rev_joint);
+		b2WeldJoint* veg_12_weld_joint = weld(venus_earth_gear1, venus_earth_gear2);
+		UNUSED(veg_12_weld_joint);
+		
+		//!Main venus gear joints
+		b2RevoluteJoint* venus_gear_rev_joint = fixCenterRevolute(venus_gear_body, ground);
+		UNUSED(venus_gear_rev_joint );
 		weld(venus_gear_body,venus_body);
 		
+		//!Venus mercury coupling rev joints and welds
+		b2RevoluteJoint* mvg2_rev_joint = fixCenterRevolute(merc_venus_gear2, ground);
+		UNUSED(mvg2_rev_joint);
+		b2RevoluteJoint* mvg1_rev_joint = fixCenterRevolute(merc_venus_gear1, ground);
+		UNUSED(mvg1_rev_joint);
+		b2WeldJoint* mvg_12_weld_joint = weld(merc_venus_gear1, merc_venus_gear2);
+		UNUSED(mvg_12_weld_joint);
 		
-		
-		
-		////////Moon gear driven////////////////////////////////////////
-		b2Body* moon1_gear_body = createGear(3,MOON1_GEAR_LAYER, 0, 0);
-		b2RevoluteJoint* moon1_gear_rev_joint = fixCenterRevolute(moon1_gear_body, ground, 0, 0);
-		
-		////////Moon driven driver weld/////////////////////////////////
-		b2WeldJoint* moon_dri_weld = weld(moon1_gear_body, moon2_gear_body);
-		
-		
-		////////Earth gear//////////////////////////////////////////////
-		b2Body* earth_gear_body = createGear(5, EARTH_GEAR_LAYER, 0, 0);
-		b2RevoluteJoint* earth_gear_rev_joint = fixCenterRevolute(earth_gear_body, ground, 0, 0);
-		b2Body* earth_body = createPlanet(16.5, 3);
+		//!Main earth gear joints
+		b2RevoluteJoint* earth_gear_rev_joint = fixCenterRevolute(earth_gear_body, ground);
+		UNUSED(earth_gear_rev_joint);
 		weld(earth_gear_body,earth_body);
-
-		///////Moon gear on Earth///////////////////////////////////////
-		b2Body* moon3_gear_body = createGear(1.8,MOON2_GEAR_LAYER, 33, 0, true, 1);
-		b2RevoluteJoint* moon3_gear_rev_joint = fixCenterRevolute(moon3_gear_body, earth_gear_body, 0, 0);
 		
-		weld(moon3_gear_body, createPlanet(2, 0.5, 33));
-
+		//!Main moon gear on earth joints
+		b2RevoluteJoint* moon3_gear_rev_joint = fixCenterRevolute(moon3_gear_body, earth_gear_body);
+		UNUSED( moon3_gear_rev_joint);
+		weld(moon3_gear_body, moon_body);
 		
-	
-		////////Mars gear///////////////////////////////////////////////
-		b2Body* mars_gear_body = createGear(6, MARS_GEAR_LAYER, 0, 0);
-		b2RevoluteJoint* mars_gear_rev_joint = fixCenterRevolute(mars_gear_body, ground, 0, 0);
-		b2Body* mars_body = createPlanet(23, 2.5);
+		//!Main mars gear
+		b2RevoluteJoint* mars_gear_rev_joint = fixCenterRevolute(mars_gear_body, ground);
+		UNUSED(mars_gear_rev_joint);
 		weld(mars_gear_body,mars_body);
-		
-		
-		////////Driver gear/////////////////////////////////////////////
-		b2Body* dri_gear_body = createGear(7, DRIVER_GEAR_LAYER, 0, 0);
+
+		//!Main driver gear
 		b2RevoluteJoint* dri_gear_rev_joint = fixCenterRevolute(dri_gear_body, ground, 0.5, 100000);
+		UNUSED(dri_gear_rev_joint);
 		
 		
-		////////Earth->moon acceleration gear///////////////////////////
-		b2Body* earth_moon_gear2 = createGear(5.1 , MOON1_GEAR_LAYER,2.702,-7.423);
-		b2RevoluteJoint* emoong2_rev_joint = fixCenterRevolute(earth_moon_gear2, ground, 0,0);
-		b2Body* earth_moon_gear1 = createGear(3, EARTH_GEAR_LAYER,2.702,-7.423);
-		b2RevoluteJoint* emoong1_rev_joint = fixCenterRevolute(earth_moon_gear1, ground, 0,0);
-		b2WeldJoint* emoong_12_weld_joint = weld(earth_moon_gear1, earth_moon_gear2);
-		
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 5.85, 0, true, 1), earth_body, 0, 0);
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 9.75, 0, true, 1), earth_body, 0, 0);
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 13.65, 0, true,1), earth_body, 0, 0);
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 17.55, 0, true,1), earth_body, 0, 0);
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 21.45, 0, true,1), earth_body, 0, 0);
-
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 25.35, 0, true,1), earth_body, 0, 0);
-
-		fixCenterRevolute(createGear(2, MOON2_GEAR_LAYER, 29.25, 0, true, 1), earth_body, 0, 0);
-
-		
-		
-		
-		
-		
-		
-		/*
-
-		b2Vec2 vs[200];
-	b2Body* conveyer[200];
-
-	b2FixtureDef chainfd;
-	b2PolygonShape chainshape;
-	float wid=0.25,heig=0.1;
-	chainshape.SetAsBox(wid, heig);
-	b2CircleShape chainshape;
-	float wid = 0.25;
-	chainshape.m_radius = 0.25;
-	chainfd.shape = &chainshape;
-	chainfd.density=.01f;
-	chainfd.friction=1000.0f;
-	chainfd.filter.categoryBits = MOON2_GEAR_LAYER;
-	chainfd.filter.maskBits = MOON2_GEAR_LAYER;
-	b2BodyDef chainDef;
-	chainDef.type = b2_dynamicBody;
-
-	///Top horizontal/*
- for (int i = 0; i < 73; ++i)
-	{
-	vs[i].Set(-1.0f+(2*wid)*i,2.0f);
-	chainDef.position.Set(-0.75+(2*wid)*i,2.0f);
-	conveyer[i]=m_world->CreateBody(&chainDef);
-	conveyer[i]->CreateFixture(&chainfd);
-	}
-
-	///rightmost vertical 
-	//chainshape.SetAsBox(heig, wid);
- for (int i = 0; i < 9; ++i)
-	{
-	vs[i+73].Set(35.5,2-i*(2*wid));
-	chainDef.position.Set(35.5,1.75f-i*(2*wid));
-	conveyer[i+73]=m_world->CreateBody(&chainDef);
-	conveyer[i+73]->CreateFixture(&chainfd);
-	}
-
-	///lower horizontal longest
-	//chainshape.SetAsBox(wid, heig);
- for (int i = 0; i < 73; ++i)
-	{
-	vs[82+i].Set(35.5f-(2*wid)*i,-2.0f);
-	chainDef.position.Set(35.25f-(2*wid)*i,-2.0f);
-	conveyer[i+82]=m_world->CreateBody(&chainDef);
-	conveyer[i+82]->CreateFixture(&chainfd);		
-	}
-
-	///lower vertical longest
-	//chainshape.SetAsBox(heig, wid);
- for (int i = 0; i < 9; ++i)
-	{
-	vs[155+i].Set(-1.0f,-2.0f+(2*wid)*i);
-	chainDef.position.Set(-1,-1.75f+(2*wid)*i);
-	conveyer[i+155] = m_world->CreateBody(&chainDef);
-	conveyer[i+155]->CreateFixture(&chainfd);
-	}
-
-	///Adding Revolute joint between chain units
-	b2DistanceJointDef jointDef3;
-	jointDef3.frequencyHz = 30;
-	jointDef3.dampingRatio = 1.0f;
- for(int i=1;i<164;i++)
-	{
-	jointDef3.Initialize(conveyer[i-1], conveyer[i],vs[i-1],vs[i]);
-	m_world->CreateJoint(&jointDef3);
-	}
-
-	jointDef3.Initialize(conveyer[0], conveyer[163],vs[0], vs[163]);
-	m_world->CreateJoint(&jointDef3);
-		*/
-		
-		/*uint16  DRIVER_GEAR_LAYER = 0x0001,  GEAR_LAYER2 = 0x0004, 
-				GEAR_LAYER3 = 0x0008, GEAR_LAYER4 = 0x0010 , GEAR_LAYER5 = 0x0020, GEAR_LAYER6 = 0x0040, NC_LAYER = 0x0010;
-
-		
-		
-		//! Main driver gear
-		{
-			dgs_b1 = createGear(5, GEAR_LAYER3, -15, 20);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = dgs_b1;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = dgs_b1->GetLocalPoint(dgs_b1->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(dgs_b1->GetPosition());
-			g1_jd.enableMotor = true;
-			g1_jd.motorSpeed = 0.5;
-			g1_jd.maxMotorTorque = 1000000;
-
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-		}
-		//!Driver gear 2
-		{
-			dgs_b2 = createGear(4, GEAR_LAYER2, -15, 20);
-			b2WeldJointDef wdj;
-			wdj.Initialize(dgs_b1, dgs_b2, dgs_b2->GetPosition());
-			m_world->CreateJoint(&wdj);
-		}
-		//! Driver gear 3
-		{
-			dgs_b3 = createGear(3, GEAR_LAYER1, -15, 20);
-			b2WeldJointDef wdj;
-			wdj.Initialize(dgs_b2, dgs_b3, dgs_b3->GetPosition());
-			m_world->CreateJoint(&wdj);
-		}
-		//! Driver gear 4
-		{
-			dgs_b4 = createGear(6, GEAR_LAYER4, -15, 20);
-			b2WeldJointDef wdj;
-			wdj.Initialize(dgs_b3, dgs_b4, dgs_b4->GetPosition());
-			m_world->CreateJoint(&wdj);
-		}
-		//! Moon magnification gear
-		{
-			b2Body *b = createGear(1.2, GEAR_LAYER4, -15, 13);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-
-			b2Body* b1 = createGear(5, GEAR_LAYER5, -15, 13);
-			b2WeldJointDef wd_jd;
-			wd_jd.Initialize(b, b1, b1->GetPosition());
-			m_world->CreateJoint(&wd_jd);
-		}
-		//! moon conn gear
-		{
-			b2Body *b = createGear(4, GEAR_LAYER5, -6.98, 16.742);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);			
-		}
-		//!Moon gear
-		{
-			b2Body *b = createGear(3.9, GEAR_LAYER5, 0, 20);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-			b2Body *b1 = createGear(3, GEAR_LAYER6, 0, 20);
-			b2WeldJointDef wdj ;
-			wdj.Initialize(b, b1, b1->GetPosition());
-			m_world->CreateJoint(&wdj);
-		}
-
-		//! Earth gear
-		{
-			b2Body *b = createGear(5, GEAR_LAYER1, 0, 20);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			g1_jd.enableMotor = true;
-			g1_jd.motorSpeed = 0;
-			g1_jd.maxMotorTorque = 1000;
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-			b2PolygonShape rod_s;
-			rod_s.SetAsBox(12.7, 0.2, b2Vec2(12.3, 0), 0);
-			b2FixtureDef rod_fd;
-			rod_fd.shape = &rod_s;
-			rod_fd.density = 1.0f;
-			rod_fd.filter.categoryBits = NC_LAYER;
-			rod_fd.filter.maskBits = GROUND;
-			b->CreateFixture(&rod_fd);
-
-			b2Body *conn_gear1 = createGear(3.2, GEAR_LAYER6, 6, 20);
-			b2RevoluteJointDef cg_rjd1;
-			cg_rjd1.bodyA = b;
-			cg_rjd1.bodyB = conn_gear1;
-			cg_rjd1.localAnchorA = b->GetLocalPoint(conn_gear1->GetPosition());
-			cg_rjd1.localAnchorB = conn_gear1->GetLocalPoint(conn_gear1->GetPosition());
-			m_world->CreateJoint(&cg_rjd1);
-
-			b2Body *conn_gear2 = createGear(3.2, GEAR_LAYER6, 12.2, 20);
-			b2RevoluteJointDef cg_rjd2;
-			cg_rjd2.bodyA = b;
-			cg_rjd2.bodyB = conn_gear2;
-			cg_rjd2.localAnchorA = b->GetLocalPoint(conn_gear2->GetPosition());
-			cg_rjd2.localAnchorB = conn_gear2->GetLocalPoint(conn_gear2->GetPosition());
-			m_world->CreateJoint(&cg_rjd2);
-
-			b2Body *conn_gear3 = createGear(3.2, GEAR_LAYER6, 18.4, 20);
-			b2RevoluteJointDef cg_rjd3;
-			cg_rjd3.bodyA = b;
-			cg_rjd3.bodyB = conn_gear3;
-			cg_rjd3.localAnchorA = b->GetLocalPoint(conn_gear3->GetPosition());
-			cg_rjd3.localAnchorB = conn_gear3->GetLocalPoint(conn_gear3->GetPosition());
-			m_world->CreateJoint(&cg_rjd3);
-
-			b2Body *conn_gear4 = createGear(3.2, GEAR_LAYER6, 24.6, 20);
-			b2RevoluteJointDef cg_rjd4;
-			cg_rjd4.bodyA = b;
-			cg_rjd4.bodyB = conn_gear4;
-			cg_rjd4.localAnchorA = b->GetLocalPoint(conn_gear4->GetPosition());
-			cg_rjd4.localAnchorB = conn_gear4->GetLocalPoint(conn_gear4->GetPosition());
-			m_world->CreateJoint(&cg_rjd4);
-
-			b2PolygonShape rod_sm;
-			rod_sm.SetAsBox(3.4, 0.1, b2Vec2(3, 0), 0);
-			b2FixtureDef rod_fdm;
-			rod_fdm.shape = &rod_sm;
-			rod_fdm.density = 1.0;
-			rod_fdm.filter.categoryBits = NC_LAYER;
-			rod_fdm.filter.maskBits = 0x0000;
-			conn_gear4->CreateFixture(&rod_fdm);
-
-			b2CircleShape moon_shape;
-			moon_shape.m_radius = 1;
-			b2BodyDef moon_bd;
-			moon_bd.type = b2_dynamicBody;
-			moon_bd.position.Set(30, 20);
-			b2Body *moon = m_world->CreateBody(&moon_bd);
-			b2FixtureDef moon_body_fd;
-			moon_body_fd.filter.categoryBits = NC_LAYER;
-			moon_body_fd.filter.maskBits = 0x0000;
-			moon_body_fd.shape = &moon_shape;
-			moon_body_fd.density = 0.0;
-			moon->CreateFixture(&moon_body_fd);
-			b2RevoluteJointDef moonjoint;
-			moonjoint.bodyA = conn_gear4;
-			moonjoint.bodyB = moon;
-			moonjoint.localAnchorA = conn_gear4->GetLocalPoint(moon->GetPosition());
-			moonjoint.localAnchorB = moon->GetLocalPoint(moon->GetPosition());
-			m_world->CreateJoint(&moonjoint);
-
-			b2CircleShape earth_shape;
-			earth_shape.m_radius = 4;
-			b2BodyDef earth_bd;
-			earth_bd.type = b2_dynamicBody;
-			earth_bd.position.Set(24.6, 20);
-			b2Body *earth = m_world->CreateBody(&earth_bd);
-			b2FixtureDef earth_body_fd;
-			earth_body_fd.filter.categoryBits = NC_LAYER;
-			earth_body_fd.filter.maskBits = 0x0000;
-			earth_body_fd.shape = &earth_shape;
-			earth_body_fd.density = 0.0;
-			earth->CreateFixture(&earth_body_fd);
-			b2RevoluteJointDef earthjoint;
-			earthjoint.bodyA = conn_gear4;
-			earthjoint.bodyB = earth;
-			earthjoint.localAnchorA = conn_gear4->GetLocalPoint(earth->GetPosition());
-			earthjoint.localAnchorB = earth->GetLocalPoint(earth->GetPosition());
-			m_world->CreateJoint(&earthjoint);
-		}
-		//! Earth conn gear
-		{
-			b2Body *b = createGear(3.6, GEAR_LAYER1, -8.5, 20);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-		}
-		//! Venus conn gear 1
-		{
-			b2Body *b = createGear(5.2, GEAR_LAYER2, -15, 29);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-		}
-
-		//! Venus conn gear 2
-		{
-			b2Body *b = createGear(2.0, GEAR_LAYER2, -8, 29);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-		}
-
-		//! Venus conn gear 3
-		{
-			b2Body *b = createGear(4.95, GEAR_LAYER2, -1.3, 29);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-		}
-
-
-		//! Venus
-		{
-			b2Body *b = createGear(4.5, GEAR_LAYER2, 0, 20);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-			b2PolygonShape rod_s;
-			rod_s.SetAsBox(10.4, 0.2, b2Vec2(10, 0), 0);
-			b2FixtureDef rod_fd;
-			rod_fd.shape = &rod_s;
-			rod_fd.density = 1.0f;
-			rod_fd.filter.categoryBits = NC_LAYER;
-			rod_fd.filter.maskBits = 0x0000;
-			b->CreateFixture(&rod_fd);
-
-			b2CircleShape planet_shape;
-			planet_shape.m_radius = 3.5;
-			b2BodyDef planet_bd;
-			planet_bd.type = b2_dynamicBody;
-			planet_bd.position.Set(20, 20);
-			b2Body *planet = m_world->CreateBody(&planet_bd);
-			b2FixtureDef planet_body_fd;
-			planet_body_fd.filter.categoryBits = NC_LAYER;
-			planet_body_fd.filter.maskBits = 0x0000;
-			planet_body_fd.shape = &planet_shape;
-			planet_body_fd.density = 0.0;
-			planet->CreateFixture(&planet_body_fd);
-			b2RevoluteJointDef planetjoint;
-			planetjoint.bodyA = b;
-			planetjoint.bodyB = planet;
-			planetjoint.localAnchorA = b->GetLocalPoint(planet->GetPosition());
-			planetjoint.localAnchorB = planet->GetLocalPoint(planet->GetPosition());
-			m_world->CreateJoint(&planetjoint);
-		}
-		//! Jupiter conn gear 1
-		{
-			b2Body *b = createGear(1.2, GEAR_LAYER3, -9, 20);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-		}
-		//! Jupiter
-		
-		{
-			b2Body *b = createGear(8, GEAR_LAYER3, 0, 20);
-			b2RevoluteJointDef g1_jd;
-			g1_jd.bodyA = b;
-
-			g1_jd.bodyB = ground;
-
-			g1_jd.localAnchorA = b->GetLocalPoint(b->GetPosition());
-			g1_jd.localAnchorB = ground->GetLocalPoint(b->GetPosition());
-			b2RevoluteJoint* dgs_joint = (b2RevoluteJoint*)m_world->CreateJoint(&g1_jd);
-			b2PolygonShape rod_s;
-			rod_s.SetAsBox(20.4, 0.2, b2Vec2(20, 0), 0);
-			b2FixtureDef rod_fd;
-			rod_fd.shape = &rod_s;
-			rod_fd.density = 1.0f;
-			rod_fd.filter.categoryBits = NC_LAYER;
-			rod_fd.filter.maskBits = 0x0040;
-			b->CreateFixture(&rod_fd);
-			
-			b2CircleShape planet_shape;
-			planet_shape.m_radius = 4.5;
-			b2BodyDef planet_bd;
-			planet_bd.type = b2_dynamicBody;
-			planet_bd.position.Set(40, 20);
-			b2Body *planet = m_world->CreateBody(&planet_bd);
-			b2FixtureDef planet_body_fd;
-			planet_body_fd.filter.categoryBits = NC_LAYER;
-			planet_body_fd.filter.maskBits = 0x0000;
-			planet_body_fd.shape = &planet_shape;
-			planet_body_fd.density = 0.0;
-			planet->CreateFixture(&planet_body_fd);
-			b2RevoluteJointDef planetjoint;
-			planetjoint.bodyA = b;
-			planetjoint.bodyB = planet;
-			planetjoint.localAnchorA = b->GetLocalPoint(planet->GetPosition());
-			planetjoint.localAnchorB = planet->GetLocalPoint(planet->GetPosition());
-			m_world->CreateJoint(&planetjoint);
-			
-		}*/
   }
 
 	
