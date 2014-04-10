@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+Simulation of an Orrery in Box2D<br> A CS296 Report by Group 07
+</title></head><body><div id='ttle'><h1>
+Simulation of an Orrery in Box2D<br> A CS296 Report by Group 07
+</h1>
+</div><div id='auth'><h1>
+Ranveer Aggarwal (120050020) <br> ranveeraggarwal@gmail.com \and Devdeep Ray (120050007) <br> devdeep.ray1994@iitb.ac.in \and Sasibhushan Rallabandi (120050056) <br> sasiralla@iitb.ac.in
+</h1>
+An orrery is a mechanical model of the solar system device that illustrates the relative sizes, positions, and motions of the planets and moons according to the heliocentric model.
+Though the Greeks had working planetaria, the first orrery that was a planetarium of the modern era was produced in 1704, and one was presented to the Earl of Orrery — whence came the name. They are typically driven by a clockwork mechanism with a globe representing the Sun at the centre, and with a planet at the end of each of the arms.
+Our intial design that we made in \textbf{Inkscape} looked somewhat like this:
+Here, one of the gears in the center (say gear A) was driving one of the planets and another gear attached to it (say gear B). On top of gear B, another gear (gear C) was welded which in turn drove another gear with the same center as gear A. The angular velocity of this gear wasn't the same as A. This gear drove another planet. In this way, changing the angular velocities as a function of gear radii, we could simulate a part of the solar system. FOr the moon, we carried forward the gear motion from the center through a series of gears and attached a rod with a sphere, with a gear with the same center as the earth.
+The system simulated through this arrangement assumed perfectly circular orbits, i.e. we neglected that the actual celestial orbits are a bit elliptical. Also, since the scope for error in calculations in Box2D is quite high, the system simulated by us doesn't take the exact ratios of orbits. Relatively, we tried to simulate the solar system as it is. For example the Earth revolves slower than Venus and Jupiter slower than the Earth. This has been incorporated in our design.
+During the course of doing this project, we learnt a lot more than what we knew initially. Hence, we continuously modified our design to reach to the final output, that looks like this:
+Basically, the concept is the same. The only difference being, to prevent cluttering, we modified the conveyor-gear (the gears that transfer motion) positions.
+</div><div><h1>Plot 1</h1><img src='../plots/g07_lab09_plot01.png'></div>
+<div><h1>Plot 2</h1><img src='../plots/g07_lab09_plot02.png'></div>
+<div><h1>Plot 3</h1><img src='../plots/g07_lab09_plot03.png'></div>
+<div><h1>Plot 4</h1><img src='../plots/g07_lab09_plot04.png'></div>
+<div><h1>Plot 5</h1><img src='../plots/g07_lab09_plot05.png'></div>
+</body></html>
