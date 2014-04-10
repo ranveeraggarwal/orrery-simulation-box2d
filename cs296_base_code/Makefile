@@ -269,15 +269,16 @@ report: ./doc/tex/cs296_report_07.*
 	@printf "$(OK_STRING)\n"
 
 
-$(DATA)/* : exe
+	
+data : 
 	@mkdir -p data
 	@cd $(SCRIPTS)/ ; \
 	./g07_gen_data.sh ;\
 	./g07_gen_csv.sh ;\
 	./g07_gen_data_csv.sh ;\
-	./g07_gen_data_random.sh ;
-data : $(DATA)/*
-
+	./g07_gen_data_random.sh 
+	
+	
 plot : 
 	@if [ ! -d $(DATA) ]; then\
 		make data;\

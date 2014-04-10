@@ -28,6 +28,7 @@
 #include "cs296_base.hpp"
 #include "callbacks.hpp"
 #include <sstream>
+#include <iostream>
 //! GLUI is the library used for drawing the GUI
 //! Learn more about GLUI by reading the GLUI documentation
 //! Learn to use preprocessor diectives to make your code portable
@@ -121,7 +122,7 @@ int main(int argc, char** argv)
   entry = sim;
   test = entry->create_fcn();
 
-  //! This initializes GLUT
+ /* //! This initializes GLUT
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
   glutInitWindowSize(width, height);
@@ -146,7 +147,7 @@ int main(int argc, char** argv)
   create_glui_ui();
 
   //! Enter the infinite GLUT event loop
-  glutMainLoop();
+  glutMainLoop();*/
 
 	
 	
@@ -167,7 +168,7 @@ int main(int argc, char** argv)
 	for(int i=0; i<n; i++)
 	{
 		
-		
+		//std::cout<<i<<std::endl;		
 		
 		(test->get_world())->Step(0.000001f, 8, 3);
 		b2Profile const& prof=(test->get_world())->GetProfile();
